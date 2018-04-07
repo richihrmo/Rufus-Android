@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context="com.developers.team100k.rufus.MainActivity">
+
+  <android.support.v7.widget.Toolbar
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/actionBarSize"
+    android:background="@color/colorPrimary"
+    android:theme="@style/AppStyle"
+    android:elevation="4dp">
+
+  </android.support.v7.widget.Toolbar>
+
+  <TextView
+    android:id="@+id/welcome"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/app_name"
+    android:layout_centerHorizontal="true"
+    android:textSize="24sp"
+    android:layout_marginTop="64dp"
+    android:layout_alignParentTop="true"/>
+
+  <android.support.v7.widget.RecyclerView
+    android:id="@+id/horizontal_recyclerview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:orientation="horizontal"
+    android:scrollbars="horizontal"
+    android:visibility="visible"
+    android:layout_below="@id/welcome"
+    />
+
+  <android.support.v4.widget.SwipeRefreshLayout
+    android:id="@+id/swipe"
+    android:layout_width="match_parent"
+    android:visibility="visible"
+    android:layout_below="@id/horizontal_recyclerview"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.RecyclerView
+      android:id="@+id/vertical_recyclerview"
+      android:layout_width="match_parent"
+      android:layout_height="300dp"
+      android:layout_marginTop="16dp"
+      android:layout_marginBottom="8dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginEnd="8dp"
+      android:scrollbars="vertical"
+      android:visibility="visible"
+      />
+
+  </android.support.v4.widget.SwipeRefreshLayout>
+
+</RelativeLayout>
