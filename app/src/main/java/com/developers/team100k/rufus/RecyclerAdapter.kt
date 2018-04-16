@@ -23,7 +23,7 @@ class RecyclerAdapter(private val dataSet: List<String>):
     }
 
 //    override fun getItemCount() = dataSet.size
-    override fun getItemCount() = 10
+    override fun getItemCount() = 30
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

@@ -5,6 +5,8 @@
   <color name="colorAccent">#FF4081</color>
   <color name="colorNew">#d5f0a7</color>
   <color name="colorNewContrast">#280b59</color>
-  <color name="colorNext">#7494da</color>
+  <color name="colorNext">#0277bd</color>
+  <color name="colorNextDark">#004c8c</color>
+  <color name="colorNextLight">#58a5f0</color>
   <color name="White">#ffffff</color>
 </resources>
