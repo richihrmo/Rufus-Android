@@ -34,16 +34,16 @@ public class DataParser {
   private Context mContext;
   private String url;
   private EventBus eventBus;
-  private String json;
+  private String json = "{\"entityMap\":{\"0\":{\"type\":\"LINK\",\"mutability\":\"MUTABLE\",\"data\":{\"url\":\"https://medium.com/@rajaraodv/how-draft-js-represents-rich-text-data-eeabb5f25cf2\"}}},\"blocks\":[{\"key\":\"70tk1\",\"text\":\"How to make Android understand\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"314ir\",\"text\":\"Look here\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[{\"offset\":0,\"length\":9,\"style\":\"BOLD\"}],\"entityRanges\":[],\"data\":{}},{\"key\":\"83ru6\",\"text\":\"wait  asdcasdcascd\",\"type\":\"ordered-list-item\",\"depth\":0,\"inlineStyleRanges\":[{\"offset\":0,\"length\":5,\"style\":\"STRIKETHROUGH\"}],\"entityRanges\":[],\"data\":{}},{\"key\":\"6oqv5\",\"text\":\"pool\",\"type\":\"ordered-list-item\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"39lk0\",\"text\":\"https://medium.com/@rajaraodv/how-draft-js-represents-rich-text-data-eeabb5f25cf2\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[{\"offset\":0,\"length\":81,\"key\":0}],\"data\":{}}]}";
   private static String filename = "tempData";
-  private List<Object> meteorites;
+  private Article mArticles;
   private boolean online;
 
   public DataParser(Context context, String URL){
     this.mContext = context;
     this.url = URL;
 //    eventBus = EventBus.getDefault();
-    json = readFile(mContext, filename);
+//    json = readFile(mContext, filename);
   }
 
   /**
@@ -51,8 +51,8 @@ public class DataParser {
    * @param json
    */
   public void jsonToCollection(String json){
-    Type type = new TypeToken<List<Object>>(){}.getType();
-    meteorites = new Gson().fromJson(json, type);
+    Type type = new TypeToken<Article>(){}.getType();
+    mArticles = new Gson().fromJson(json, type);
 //    Collections.sort(meteorites, new CustomComparator());
 //    eventBus.postSticky("refresh");
   }

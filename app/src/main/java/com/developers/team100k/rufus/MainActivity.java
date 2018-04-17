@@ -66,6 +66,10 @@ public class MainActivity extends AppCompatActivity {
       actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
     }
 
+    DataParser dataParser = new DataParser(this, "");
+    dataParser.jsonToCollection(dataParser.getJson());
+    
+
     tabLayout.addTab(tabLayout.newTab().setText("Politics"));
     tabLayout.addTab(tabLayout.newTab().setText("Sports"));
     tabLayout.addTab(tabLayout.newTab().setText("Peto"));
