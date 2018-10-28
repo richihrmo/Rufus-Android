@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:background="@color/colorNext"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context=".LoginActivity">
+
+  <TextView
+    android:id="@+id/welcome_text"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:layout_marginTop="72dp"
+    android:text="Welcome"/>
+
+  <ImageView
+    android:id="@+id/logo_login"
+    android:contentDescription="logo"
+    android:layout_width="240dp"
+    android:layout_height="240dp"
+    android:layout_marginTop="72dp"
+    android:layout_centerHorizontal="true"
+    android:cropToPadding="true"
+    android:src="@drawable/android_logo"
+    />
+
+  <com.facebook.login.widget.LoginButton
+    android:id="@+id/facebook_login"
+    android:layout_width="200dp"
+    android:layout_height="48dp"
+    android:layout_centerHorizontal="true"
+    android:layout_marginTop="30dp"
+    android:layout_marginBottom="30dp"
+    android:layout_above="@+id/google_login"/>
+
+  <com.google.android.gms.common.SignInButton
+    android:id="@+id/google_login"
+    android:layout_width="200dp"
+    android:layout_height="48dp"
+    android:layout_centerHorizontal="true"
+    android:layout_alignParentBottom="true"
+    android:layout_marginBottom="140dp"/>
+
+</RelativeLayout>

@@ -1,4 +1,4 @@
-package com.developers.team100k.rufus
+package com.developers.team100k.rufus.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.developers.team100k.rufus.R
 
 /**
  * Created by Richard Hrmo.
@@ -14,7 +15,7 @@ class RecyclerAdapter(private val dataSet: List<String>):
         RecyclerView.Adapter<RecyclerAdapter.ViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup,
-                                    viewType: Int): RecyclerAdapter.ViewHolder {
+                                    viewType: Int): ViewHolder {
         // create a new view
         val cardView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.recycler_item, parent, false) as LinearLayout

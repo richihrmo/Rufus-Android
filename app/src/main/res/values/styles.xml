@@ -3,7 +3,7 @@
   <style name="AppStyle" parent="Theme.AppCompat.Light.NoActionBar">
     <item name="colorPrimary">@color/colorNext</item>
     <item name="colorPrimaryDark">@color/colorNextDark</item>
-    <item name="colorAccent">@color/White</item>
+    <item name="colorAccent">@color/colorNextAccent</item>
     <item name="android:statusBarColor">@color/colorNextDark</item>
   </style>
 

@@ -38,7 +38,7 @@
         <Button
           android:id="@+id/credits"
           android:text="9 Credits"
-          style="@style/Widget.AppCompat.Button.Borderless.Colored"
+          style="@style/Widget.AppCompat.Button.Borderless"
           android:layout_alignParentEnd="true"
           android:layout_centerVertical="true"
           android:layout_width="wrap_content"
@@ -106,6 +106,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="start"
     android:fitsSystemWindows="true"
-    app:menu="@menu/drawer_view"/>
+    app:menu="@menu/drawer_view"
+    app:headerLayout="@layout/nav_header"/>
 
 </android.support.v4.widget.DrawerLayout>

@@ -1,4 +1,4 @@
-package com.developers.team100k.rufus;
+package com.developers.team100k.rufus.entity;
 
 import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;

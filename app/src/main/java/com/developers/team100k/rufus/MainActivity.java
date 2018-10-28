@@ -2,6 +2,8 @@ package com.developers.team100k.rufus;
 
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
@@ -16,27 +18,47 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutManager;
-import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.RelativeLayout;
-import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.bumptech.glide.Glide;
+import com.developers.team100k.rufus.adapter.OnScrollObserver;
+import com.developers.team100k.rufus.adapter.RecyclerAdapter;
+import com.developers.team100k.rufus.processing.JsonParser;
+import com.developers.team100k.rufus.profile.UserProfile;
+import com.facebook.Profile;
+import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInApi;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.Api;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import de.hdodenhof.circleimageview.CircleImageView;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,10 +71,19 @@ public class MainActivity extends AppCompatActivity {
   @BindView(R.id.toolbar) Toolbar myToolbar;
   @BindView(R.id.welcome) TextView welcome;
 
+  private UserProfile user;
+  private boolean facebook = false;
+  private boolean google = false;
   private RecyclerView.Adapter mAdapterHor;
   private RecyclerView.Adapter mAdapter;
+  private Object randomJson;
   private static final int MARGIN_TOP = 56;
   private List<String> dummy_data = new ArrayList<>();
+  private FirebaseAuth mAuth;
+  private FirebaseUser mFirebaseUser;
+  private DatabaseReference mDatabase;
+
+  private Intent loginActivity;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -60,13 +91,67 @@ public class MainActivity extends AppCompatActivity {
     setContentView(R.layout.activity_main);
     ButterKnife.bind(this);
     setSupportActionBar(myToolbar);
+    mAuth = FirebaseAuth.getInstance();
+    mDatabase = FirebaseDatabase.getInstance().getReference();
+
     ActionBar actionBar = getSupportActionBar();
     if (actionBar != null) {
       actionBar.setDisplayHomeAsUpEnabled(true);
       actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
     }
 
-    DataParser dataParser = new DataParser(this, "");
+    mFirebaseUser = mAuth.getCurrentUser();
+    System.out.println(mFirebaseUser.getDisplayName());
+
+    mDatabase.child("categories").addListenerForSingleValueEvent(new ValueEventListener() {
+      @Override
+      public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+        randomJson = dataSnapshot.getValue(Object.class);
+        System.out.println(randomJson);
+      }
+
+      @Override
+      public void onCancelled(@NonNull DatabaseError databaseError) {
+        System.out.println("Fail to read.");
+      }
+    });
+
+
+    View header = mNavigationView.getHeaderView(0);
+    TextView loggedUsing = header.findViewById(R.id.loggedwith);
+    TextView profileName = header.findViewById(R.id.profile_name);
+    TextView profileEmail = header.findViewById(R.id.profile_email);
+    CircleImageView profileImage = header.findViewById(R.id.profile_picture);
+
+    GoogleSignInAccount GAccount = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
+    Profile FAccount = Profile.getCurrentProfile();
+    if (GAccount != null) {
+      user = new UserProfile(GAccount.getId(), GAccount.getDisplayName(), GAccount.getEmail(), GAccount.getPhotoUrl());
+      loggedUsing.setText("Logged with Google Account");
+      google = true;
+      profileName.setText(user.getPersonName());
+      profileEmail.setText(user.getPersonEmail());
+      Uri photo = user.getPersonPhoto();
+      if (photo != null) {
+        Glide.with(MainActivity.this)
+            .load(photo)
+            .into(profileImage);
+      }
+    } else if (FAccount != null) {
+      user = new UserProfile(FAccount.getId(), FAccount.getName(), FAccount.getId(), FAccount.getProfilePictureUri(64,64));
+      loggedUsing.setText("Logged with Facebook Account");
+      facebook = true;
+      profileName.setText(user.getPersonName());
+      profileEmail.setText(user.getPersonEmail());
+      Uri photo = user.getPersonPhoto();
+      if (photo != null) {
+        Glide.with(MainActivity.this)
+            .load(photo)
+            .into(profileImage);
+      }
+    }
+
+    JsonParser dataParser = new JsonParser(this, "");
     dataParser.jsonToCollection(dataParser.getJson());
     
 
@@ -105,6 +190,17 @@ public class MainActivity extends AppCompatActivity {
     mNavigationView.setNavigationItemSelectedListener(new OnNavigationItemSelectedListener() {
       @Override
       public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+          case R.id.logout:
+            loginActivity = new Intent(MainActivity.this, LoginActivity.class);
+            if (facebook) LoginManager.getInstance().logOut();
+            if (google) loginActivity.setAction("logout");
+              startActivity(loginActivity);
+              finish();
+              break;
+            default:
+              break;
+        }
         item.setChecked(true);
         mDrawerLayout.closeDrawers();
         //update UI according to item selected
@@ -233,4 +329,5 @@ public class MainActivity extends AppCompatActivity {
     }
     return super.onOptionsItemSelected(item);
   }
+
 }

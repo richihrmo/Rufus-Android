@@ -8,5 +8,6 @@
   <color name="colorNext">#0277bd</color>
   <color name="colorNextDark">#004c8c</color>
   <color name="colorNextLight">#58a5f0</color>
+  <color name="colorNextAccent">#00b0ff</color>
   <color name="White">#ffffff</color>
 </resources>

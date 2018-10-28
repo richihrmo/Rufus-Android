@@ -1,4 +1,4 @@
-package com.developers.team100k.rufus;
+package com.developers.team100k.rufus.processing;
 
     import android.content.Context;
     import android.net.ConnectivityManager;
@@ -9,6 +9,7 @@ package com.developers.team100k.rufus;
     import com.android.volley.VolleyError;
     import com.android.volley.toolbox.StringRequest;
     import com.android.volley.toolbox.Volley;
+    import com.developers.team100k.rufus.entity.Article;
     import com.google.gson.Gson;
     import com.google.gson.reflect.TypeToken;
     import java.io.BufferedReader;
@@ -19,9 +20,6 @@ package com.developers.team100k.rufus;
     import java.io.InputStreamReader;
     import java.io.UnsupportedEncodingException;
     import java.lang.reflect.Type;
-    import java.util.Collections;
-    import java.util.Comparator;
-    import java.util.List;
     import org.greenrobot.eventbus.EventBus;
 
 /**
@@ -29,7 +27,7 @@ package com.developers.team100k.rufus;
  * Data parsing class
  * Fn: Get data from URL, Create collection from data, R/W to File
  */
-public class DataParser {
+public class JsonParser {
 
   private Context mContext;
   private String url;
@@ -39,7 +37,7 @@ public class DataParser {
   private Article mArticles;
   private boolean online;
 
-  public DataParser(Context context, String URL){
+  public JsonParser(Context context, String URL){
     this.mContext = context;
     this.url = URL;
 //    eventBus = EventBus.getDefault();

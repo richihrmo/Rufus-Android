@@ -1,4 +1,4 @@
-package com.developers.team100k.rufus;
+package com.developers.team100k.rufus.adapter;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_SETTLING;
 

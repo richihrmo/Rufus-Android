@@ -1,15 +1,15 @@
-package com.developers.team100k.rufus;
+package com.developers.team100k.rufus.entity;
 
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Richard Hrmo.
  */
-class EntityRangesObject {
+class InlineStyleRangesObject {
   @SerializedName("offset")
   private int offset;
   @SerializedName("length")
   private int length;
-  @SerializedName("key")
-  private int key;
+  @SerializedName("style")
+  private String style;
 }
