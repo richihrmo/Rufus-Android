@@ -23,6 +23,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -34,29 +35,20 @@ import butterknife.ButterKnife;
 import com.bumptech.glide.Glide;
 import com.developers.team100k.rufus.adapter.OnScrollObserver;
 import com.developers.team100k.rufus.adapter.RecyclerAdapter;
+import com.developers.team100k.rufus.processing.CategoriesParser;
 import com.developers.team100k.rufus.processing.JsonParser;
 import com.developers.team100k.rufus.profile.UserProfile;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInApi;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.Api;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.observers.DefaultObserver;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -76,12 +68,12 @@ public class MainActivity extends AppCompatActivity {
   private boolean google = false;
   private RecyclerView.Adapter mAdapterHor;
   private RecyclerView.Adapter mAdapter;
-  private Object randomJson;
   private static final int MARGIN_TOP = 56;
   private List<String> dummy_data = new ArrayList<>();
   private FirebaseAuth mAuth;
   private FirebaseUser mFirebaseUser;
   private DatabaseReference mDatabase;
+  private Map<String, String> random;
 
   private Intent loginActivity;
 
@@ -92,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
     ButterKnife.bind(this);
     setSupportActionBar(myToolbar);
     mAuth = FirebaseAuth.getInstance();
+    FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     mDatabase = FirebaseDatabase.getInstance().getReference();
 
     ActionBar actionBar = getSupportActionBar();
@@ -103,18 +96,18 @@ public class MainActivity extends AppCompatActivity {
     mFirebaseUser = mAuth.getCurrentUser();
     System.out.println(mFirebaseUser.getDisplayName());
 
-    mDatabase.child("categories").addListenerForSingleValueEvent(new ValueEventListener() {
-      @Override
-      public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-        randomJson = dataSnapshot.getValue(Object.class);
-        System.out.println(randomJson);
-      }
-
-      @Override
-      public void onCancelled(@NonNull DatabaseError databaseError) {
-        System.out.println("Fail to read.");
-      }
-    });
+//    mDatabase.child("categories").addListenerForSingleValueEvent(new ValueEventListener() {
+//      @Override
+//      public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//        randomJson = dataSnapshot.getValue(Object.class);
+//        System.out.println(randomJson);
+//      }
+//
+//      @Override
+//      public void onCancelled(@NonNull DatabaseError databaseError) {
+//        System.out.println("Fail to read.");
+//      }
+//    });
 
 
     View header = mNavigationView.getHeaderView(0);
@@ -153,22 +146,31 @@ public class MainActivity extends AppCompatActivity {
 
     JsonParser dataParser = new JsonParser(this, "");
     dataParser.jsonToCollection(dataParser.getJson());
-    
 
-    tabLayout.addTab(tabLayout.newTab().setText("Politics"));
-    tabLayout.addTab(tabLayout.newTab().setText("Sports"));
-    tabLayout.addTab(tabLayout.newTab().setText("Peto"));
-    tabLayout.addTab(tabLayout.newTab().setText("je"));
-    tabLayout.addTab(tabLayout.newTab().setText("Noob"));
-    tabLayout.addTab(tabLayout.newTab().setText("Peto"));
-    tabLayout.addTab(tabLayout.newTab().setText("je"));
-    tabLayout.addTab(tabLayout.newTab().setText("Noob"));
-    tabLayout.addTab(tabLayout.newTab().setText("Peto"));
-    tabLayout.addTab(tabLayout.newTab().setText("je"));
-    tabLayout.addTab(tabLayout.newTab().setText("Noob"));
-    tabLayout.addTab(tabLayout.newTab().setText("Peto"));
-    tabLayout.addTab(tabLayout.newTab().setText("je"));
-    tabLayout.addTab(tabLayout.newTab().setText("Noob"));
+    CategoriesParser categoriesParser = new CategoriesParser(mDatabase);
+    categoriesParser.databaseCall();
+
+    io.reactivex.Observer<Object> observer = new DefaultObserver<Object>() {
+      @Override
+      public void onNext(Object o) {
+        random = (Map<String, String>) o;
+        Log.e("Observer", "onNext");
+        tabLayout.addTab(tabLayout.newTab().setText(random.get("name")));
+      }
+
+      @Override
+      public void onError(Throwable e) {
+        Log.e("Observer", "onError");
+      }
+
+      @Override
+      public void onComplete() {
+        Log.e("Observer", "onComplete");
+      }
+    };
+
+    categoriesParser.getData().subscribe(observer);
+
 
     tabLayout.addOnTabSelectedListener(new OnTabSelectedListener() {
       @Override
