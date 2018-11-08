@@ -35,8 +35,10 @@ import butterknife.ButterKnife;
 import com.bumptech.glide.Glide;
 import com.developers.team100k.rufus.adapter.OnScrollObserver;
 import com.developers.team100k.rufus.adapter.RecyclerAdapter;
+import com.developers.team100k.rufus.entity.Page;
 import com.developers.team100k.rufus.processing.CategoriesParser;
 import com.developers.team100k.rufus.processing.JsonParser;
+import com.developers.team100k.rufus.processing.PagesParser;
 import com.developers.team100k.rufus.profile.UserProfile;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
@@ -150,11 +152,14 @@ public class MainActivity extends AppCompatActivity {
     CategoriesParser categoriesParser = new CategoriesParser(mDatabase);
     categoriesParser.databaseCall();
 
-    io.reactivex.Observer<Object> observer = new DefaultObserver<Object>() {
+//    PagesParser pagesParser = new PagesParser(mDatabase);
+//    pagesParser.callDatabase();
+
+    io.reactivex.Observer<Object> categoryObserver = new DefaultObserver<Object>() {
       @Override
       public void onNext(Object o) {
         random = (Map<String, String>) o;
-        Log.e("Observer", "onNext");
+        Log.e("categoryObserver", "onNext");
         tabLayout.addTab(tabLayout.newTab().setText(random.get("name")));
       }
 
@@ -168,8 +173,27 @@ public class MainActivity extends AppCompatActivity {
         Log.e("Observer", "onComplete");
       }
     };
+    categoriesParser.getData().subscribe(categoryObserver);
 
-    categoriesParser.getData().subscribe(observer);
+//    io.reactivex.Observer<Object> pageObserver = new DefaultObserver<Object>() {
+//      @Override
+//      public void onNext(Object o) {
+//        Page random = (Page) o;
+////        Log.e("pageObserver", "onNext");
+//        Log.e("pageObserver", random.toString());
+//      }
+//
+//      @Override
+//      public void onError(Throwable e) {
+//        Log.e("Observer", "onError");
+//      }
+//
+//      @Override
+//      public void onComplete() {
+//        Log.e("Observer", "onComplete");
+//      }
+//    };
+//    pagesParser.getData().subscribe(pageObserver);
 
 
     tabLayout.addOnTabSelectedListener(new OnTabSelectedListener() {
@@ -193,6 +217,10 @@ public class MainActivity extends AppCompatActivity {
       @Override
       public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
+          case R.id.staticpage:
+            Intent intent = new Intent(MainActivity.this, ShowActivity.class);
+            startActivity(intent);
+            break;
           case R.id.logout:
             loginActivity = new Intent(MainActivity.this, LoginActivity.class);
             if (facebook) LoginManager.getInstance().logOut();

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Richard Hrmo.
  */
-class InlineStyleRangesObject {
+public class InlineStyleRangesObject {
   @SerializedName("offset")
   private int offset;
   @SerializedName("length")

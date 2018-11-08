@@ -18,6 +18,10 @@
       android:icon="@drawable/ic_menu_white_24dp"
       android:title="@string/app_name" />
     <item
+      android:id="@+id/staticpage"
+      android:icon="@drawable/ic_menu_white_24dp"
+      android:title="@string/common_signin_button_text" />
+    <item
       android:id="@+id/logout"
       android:icon="@drawable/ic_exit_to_app_black_24dp"
       android:title="Log out"/>
