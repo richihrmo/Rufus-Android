@@ -7,11 +7,12 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.developers.team100k.rufus.R
+import com.developers.team100k.rufus.entity.Headline
 
 /**
  * Created by Richard Hrmo.
  */
-class RecyclerAdapter(private val dataSet: List<String>):
+class RecyclerAdapter(private var dataSet: List<Headline>):
         RecyclerView.Adapter<RecyclerAdapter.ViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup,
@@ -24,12 +25,12 @@ class RecyclerAdapter(private val dataSet: List<String>):
     }
 
 //    override fun getItemCount() = dataSet.size
-    override fun getItemCount() = 30
+    override fun getItemCount() = dataSet.size
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.title.setText("How I went from newbie to Software Engineer in 9 months while working full time")
-        holder.subtitle.setText("In this post, I'll share how I went from zero(ish) to a six-figure software engineering job offer in nine months while working full time and being self-taught.")
+        holder.title.setText(dataSet[position].title)
+        holder.subtitle.setText(dataSet[position].subtitle)
         holder.titleImage.setImageResource(R.drawable.ic_launcher_foreground)
     }
 

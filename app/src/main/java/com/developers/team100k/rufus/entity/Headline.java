@@ -5,6 +5,10 @@ package com.developers.team100k.rufus.entity;
  */
 public class Headline {
 
+  public String getAuthor() {
+    return author;
+  }
+
   public String getTitle() {
     return title;
   }
@@ -13,14 +17,32 @@ public class Headline {
     return subtitle;
   }
 
-  private String title;
-  private String subtitle;
-
-  public Headline() {
+  public String getCategory() {
+    return category;
   }
 
-  public Headline(String title, String subtitle) {
+  public Boolean getFeatured() {
+    return featured;
+  }
+
+  public Article getArticle() {
+    return article;
+  }
+
+  private String author;
+  private String title;
+  private String subtitle;
+  private String category;
+  private Boolean featured;
+  private Article article;
+
+  public Headline(String author, String title, String subtitle, String category, Boolean featured,
+      Article article) {
+    this.author = author;
     this.title = title;
     this.subtitle = subtitle;
+    this.category = category;
+    this.featured = featured;
+    this.article = article;
   }
 }

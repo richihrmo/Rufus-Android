@@ -18,8 +18,7 @@ class CategoriesParser(val mDatabase: DatabaseReference) {
         mDatabase.child("categories").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 map = dataSnapshot.getValue(false) as Map<String, Any>
-                val key = map.keys.first()
-                val value = map.get(key)
+                secondCall()
                 Log.e("Firebase", map.toString())
             }
 
@@ -27,6 +26,9 @@ class CategoriesParser(val mDatabase: DatabaseReference) {
                 println("Fail to read.")
             }
         })
+    }
+
+    fun secondCall(){
         mDatabase.child("categoryKeys").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 list = dataSnapshot.getValue(false) as List<String>

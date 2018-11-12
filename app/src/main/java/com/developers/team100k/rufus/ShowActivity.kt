@@ -28,6 +28,7 @@ class ShowActivity : AppCompatActivity() {
     private lateinit var random: Page
     private lateinit var array: List<ContentBlock>
     private lateinit var string: String
+    private lateinit var pageObserver: DefaultObserver<Any>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +40,7 @@ class ShowActivity : AppCompatActivity() {
 
         exit.setOnClickListener { finish() }
 
-        val pageObserver = object : DefaultObserver<Any>() {
+        pageObserver = object : DefaultObserver<Any>() {
             override fun onNext(o: Any) {
                 random = o as Page
                 array = random.article.blockArray

@@ -1,7 +1,6 @@
 package com.developers.team100k.rufus.processing
 
 import android.util.Log
-import com.developers.team100k.rufus.entity.Headline
 import com.developers.team100k.rufus.entity.Page
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -36,11 +35,13 @@ class PagesParser(val mDatabase: DatabaseReference){
                 println("Fail to read.")
             }
         })
+    }
 
+    fun secondCall(){
         mDatabase.child("pageContents").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 map2 = dataSnapshot.getValue(false) as Map<String, String>
-                jsonParser.jsonToCollection(map2.get(map.keys.first()))
+                jsonParser.jsonToCollection(map2[map.keys.first()])
                 val random = map.get(map.keys.first()) as Map<String, String>
                 Log.e("random", random.toString())
                 val article = jsonParser.articles

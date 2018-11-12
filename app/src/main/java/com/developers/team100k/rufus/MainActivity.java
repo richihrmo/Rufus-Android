@@ -2,6 +2,7 @@ package com.developers.team100k.rufus;
 
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -28,6 +29,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
@@ -35,7 +37,9 @@ import butterknife.ButterKnife;
 import com.bumptech.glide.Glide;
 import com.developers.team100k.rufus.adapter.OnScrollObserver;
 import com.developers.team100k.rufus.adapter.RecyclerAdapter;
+import com.developers.team100k.rufus.entity.Headline;
 import com.developers.team100k.rufus.entity.Page;
+import com.developers.team100k.rufus.processing.ArticlesParser;
 import com.developers.team100k.rufus.processing.CategoriesParser;
 import com.developers.team100k.rufus.processing.JsonParser;
 import com.developers.team100k.rufus.processing.PagesParser;
@@ -44,6 +48,7 @@ import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.util.CollectionUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -53,6 +58,7 @@ import io.reactivex.observers.DefaultObserver;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -76,6 +82,8 @@ public class MainActivity extends AppCompatActivity {
   private FirebaseUser mFirebaseUser;
   private DatabaseReference mDatabase;
   private Map<String, String> random;
+  private Headline headline;
+  private List<Headline> listHeadline;
 
   private Intent loginActivity;
 
@@ -85,34 +93,21 @@ public class MainActivity extends AppCompatActivity {
     setContentView(R.layout.activity_main);
     ButterKnife.bind(this);
     setSupportActionBar(myToolbar);
-    mAuth = FirebaseAuth.getInstance();
-    FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-    mDatabase = FirebaseDatabase.getInstance().getReference();
 
+    if (mDatabase == null){
+      mDatabase = FirebaseDatabase.getInstance().getReference();
+    }
     ActionBar actionBar = getSupportActionBar();
     if (actionBar != null) {
       actionBar.setDisplayHomeAsUpEnabled(true);
       actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
     }
+    if (mFirebaseUser == null){
+      mAuth = FirebaseAuth.getInstance();
+      mFirebaseUser = mAuth.getCurrentUser();
+    }
 
-    mFirebaseUser = mAuth.getCurrentUser();
-    System.out.println(mFirebaseUser.getDisplayName());
-
-//    mDatabase.child("categories").addListenerForSingleValueEvent(new ValueEventListener() {
-//      @Override
-//      public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//        randomJson = dataSnapshot.getValue(Object.class);
-//        System.out.println(randomJson);
-//      }
-//
-//      @Override
-//      public void onCancelled(@NonNull DatabaseError databaseError) {
-//        System.out.println("Fail to read.");
-//      }
-//    });
-
-
-    View header = mNavigationView.getHeaderView(0);
+    final View header = mNavigationView.getHeaderView(0);
     TextView loggedUsing = header.findViewById(R.id.loggedwith);
     TextView profileName = header.findViewById(R.id.profile_name);
     TextView profileEmail = header.findViewById(R.id.profile_email);
@@ -148,6 +143,33 @@ public class MainActivity extends AppCompatActivity {
 
     JsonParser dataParser = new JsonParser(this, "");
     dataParser.jsonToCollection(dataParser.getJson());
+
+    ArticlesParser articlesParser = new ArticlesParser(mDatabase);
+    articlesParser.callDatabase();
+
+    io.reactivex.Observer<Object> articlesObserver = new DefaultObserver<Object>() {
+      @Override
+      public void onNext(Object o) {
+        listHeadline = (List<Headline>) o;
+        mAdapter = new RecyclerAdapter(listHeadline);
+        mVerticalRV.setAdapter(mAdapter);
+//        random = (Map<String, String>) o;
+//        Log.e("articleObserver", "onNext");
+//        Log.e("articleObserver", ((Map<String, String>) o).values().toString());
+//        tabLayout.addTab(tabLayout.newTab().setText(random.get("name")));
+      }
+
+      @Override
+      public void onError(Throwable e) {
+        Log.e("Observer", "onError");
+      }
+
+      @Override
+      public void onComplete() {
+        Log.e("Observer", "onComplete");
+      }
+    };
+    articlesParser.getData().subscribe(articlesObserver);
 
     CategoriesParser categoriesParser = new CategoriesParser(mDatabase);
     categoriesParser.databaseCall();
@@ -199,7 +221,18 @@ public class MainActivity extends AppCompatActivity {
     tabLayout.addOnTabSelectedListener(new OnTabSelectedListener() {
       @Override
       public void onTabSelected(Tab tab) {
-        //TODO
+        List<Headline> list = new ArrayList<>();
+        if (String.valueOf(tab.getText()).equals("All")){
+          list = listHeadline;
+        } else if (listHeadline != null){
+          for (Headline headline : listHeadline ){
+            if (headline.getCategory() != null && headline.getCategory().equals(String.valueOf(tab.getText()))){
+              list.add(headline);
+            }
+          }
+          mAdapter = new RecyclerAdapter(list);
+          mVerticalRV.setAdapter(mAdapter);
+        }
       }
 
       @Override
@@ -341,13 +374,13 @@ public class MainActivity extends AppCompatActivity {
     snapHelper.attachToRecyclerView(mHorizontalRV);
     LayoutManager mHorizontalLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
     mHorizontalRV.setLayoutManager(mHorizontalLayoutManager);
-    mAdapterHor = new RecyclerAdapter(dummy_data);
-    mHorizontalRV.setAdapter(mAdapterHor);
+//    mAdapterHor = new RecyclerAdapter(dummy_data);
+//    mHorizontalRV.setAdapter(mAdapterHor);
 
     LayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
     mVerticalRV.setLayoutManager(mLayoutManager);
-    mAdapter = new RecyclerAdapter(dummy_data);
-    mVerticalRV.setAdapter(mAdapter);
+//    mAdapter = new RecyclerAdapter(dummy_data);
+//    mVerticalRV.setAdapter(mAdapter);
   }
 
   @Override
