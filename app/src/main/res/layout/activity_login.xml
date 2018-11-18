@@ -24,7 +24,7 @@
     android:layout_marginTop="72dp"
     android:layout_centerHorizontal="true"
     android:cropToPadding="true"
-    android:src="@drawable/android_logo"
+    android:src="@drawable/com_facebook_button_login_logo"
     />
 
   <com.facebook.login.widget.LoginButton

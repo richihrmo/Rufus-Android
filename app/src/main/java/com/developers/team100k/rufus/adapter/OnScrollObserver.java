@@ -1,10 +1,8 @@
 package com.developers.team100k.rufus.adapter;
 
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_SETTLING;
+import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_SETTLING;
 
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.MotionEvent;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by Richard Hrmo.

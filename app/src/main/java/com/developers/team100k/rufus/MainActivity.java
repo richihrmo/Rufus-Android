@@ -4,25 +4,27 @@ import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
-import android.support.design.widget.TabLayout;
-import android.support.design.widget.TabLayout.OnTabSelectedListener;
-import android.support.design.widget.TabLayout.Tab;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager.widget.ViewPager.SimpleOnPageChangeListener;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
+import com.google.android.material.tabs.TabLayout.Tab;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PagerSnapHelper;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.LayoutManager;
-import android.support.v7.widget.SnapHelper;
-import android.support.v7.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.LayoutManager;
+import androidx.recyclerview.widget.SnapHelper;
+import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -38,15 +40,8 @@ import com.developers.team100k.rufus.processing.JsonParser;
 import com.developers.team100k.rufus.profile.UserProfile;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInApi;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.Api;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -56,20 +51,24 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import de.hdodenhof.circleimageview.CircleImageView;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-  @BindView(R.id.menu_layout) DrawerLayout mDrawerLayout;
-  @BindView(R.id.tabs) TabLayout tabLayout;
-  @BindView(R.id.nav_view) NavigationView mNavigationView;
-  @BindView(R.id.horizontal_recyclerview) RecyclerView mHorizontalRV;
-  @BindView(R.id.vertical_recyclerview) RecyclerView mVerticalRV;
-  @BindView(R.id.swipe) SwipeRefreshLayout mRefreshLayout;
-  @BindView(R.id.toolbar) Toolbar myToolbar;
-  @BindView(R.id.welcome) TextView welcome;
+  @BindView(R.id.menu_layout)
+  DrawerLayout mDrawerLayout;
+  @BindView(R.id.tabs)
+  TabLayout tabLayout;
+  @BindView(R.id.nav_view)
+  NavigationView mNavigationView;
+  @BindView(R.id.vertical_recyclerview)
+  RecyclerView mVerticalRV;
+  @BindView(R.id.swipe)
+  SwipeRefreshLayout mRefreshLayout;
+  @BindView(R.id.toolbar)
+  Toolbar myToolbar;
+  @BindView(R.id.viewpager)
+  ViewPager mViewPager;
 
   private UserProfile user;
   private boolean facebook = false;
@@ -97,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
     ActionBar actionBar = getSupportActionBar();
     if (actionBar != null) {
       actionBar.setDisplayHomeAsUpEnabled(true);
-      actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+      actionBar.setHomeAsUpIndicator(R.drawable.com_facebook_button_icon);
     }
 
     mFirebaseUser = mAuth.getCurrentUser();
@@ -170,6 +169,14 @@ public class MainActivity extends AppCompatActivity {
     tabLayout.addTab(tabLayout.newTab().setText("je"));
     tabLayout.addTab(tabLayout.newTab().setText("Noob"));
 
+    tabLayout.setupWithViewPager(mViewPager);
+    mViewPager.addOnPageChangeListener(new SimpleOnPageChangeListener(){
+      @Override
+      public void onPageSelected(int position) {
+        tabLayout.setScrollPosition(position, 0,false);
+      }
+    });
+
     tabLayout.addOnTabSelectedListener(new OnTabSelectedListener() {
       @Override
       public void onTabSelected(Tab tab) {
@@ -210,94 +217,94 @@ public class MainActivity extends AppCompatActivity {
     });
 
     mRefreshLayout.setEnabled(true);
-    mHorizontalRV.setHasFixedSize(true);
+//    mHorizontalRV.setHasFixedSize(true);
 
-    mVerticalRV.addOnScrollListener(new OnScrollObserver() {
-      @Override
-      public void show() {
-        myToolbar.animate()
-            .translationY(0)
-            .setInterpolator(new DecelerateInterpolator(1))
-            .setStartDelay(0)
-            .start();
-        mHorizontalRV.animate()
-            .translationY(0)
-            .setInterpolator(new DecelerateInterpolator(1))
-            .setStartDelay(0)
-            .start();
-        welcome.animate().translationY(0)
-            .setInterpolator(new DecelerateInterpolator(1))
-            .setListener(new AnimatorListener() {
-              @Override
-              public void onAnimationStart(Animator animator) {
-                mHorizontalRV.setVisibility(View.VISIBLE);
-                myToolbar.setVisibility(View.VISIBLE);
-                welcome.setVisibility(View.VISIBLE);
-              }
-              @Override
-              public void onAnimationEnd(Animator animator) {
-              }
-              @Override
-              public void onAnimationCancel(Animator animator) {
-                mHorizontalRV.setVisibility(View.VISIBLE);
-                myToolbar.setVisibility(View.VISIBLE);
-                welcome.setVisibility(View.VISIBLE);
-              }
-              @Override
-              public void onAnimationRepeat(Animator animator) {
-                mHorizontalRV.setVisibility(View.VISIBLE);
-                myToolbar.setVisibility(View.VISIBLE);
-                welcome.setVisibility(View.VISIBLE);
-              }
-            })
-            .setStartDelay(0)
-            .start();
-      }
-      @Override
-      public void hide() {
-        myToolbar.animate()
-            .translationY(-myToolbar.getHeight())
-            .setInterpolator(new AccelerateInterpolator(1))
-            .setStartDelay(450)
-            .start();
-        mHorizontalRV.animate()
-            .translationY(-(myToolbar.getHeight() + mHorizontalRV.getHeight() + welcome.getHeight() + MARGIN_TOP))
-            .setInterpolator(new AccelerateInterpolator(1))
-            .setStartDelay(150)
-            .start();
-        welcome.animate().translationY(-(myToolbar.getHeight() + welcome.getHeight() + MARGIN_TOP))
-            .setInterpolator(new AccelerateInterpolator(1))
-            .setListener(new AnimatorListener() {
-              @Override
-              public void onAnimationStart(Animator animator) {
-                mHorizontalRV.setVisibility(View.GONE);
-                myToolbar.setVisibility(View.GONE);
-                welcome.setVisibility(View.GONE);
-                mVerticalRV.setNestedScrollingEnabled(false);
-              }
-              @Override
-              public void onAnimationEnd(Animator animator) {
-                mVerticalRV.setVerticalScrollbarPosition(2);
-
-//                mVerticalRV.smoothScrollToPosition(2);
-              }
-              @Override
-              public void onAnimationCancel(Animator animator) {
-                mHorizontalRV.setVisibility(View.GONE);
-                myToolbar.setVisibility(View.GONE);
-                welcome.setVisibility(View.GONE);
-              }
-              @Override
-              public void onAnimationRepeat(Animator animator) {
-                mHorizontalRV.setVisibility(View.GONE);
-                myToolbar.setVisibility(View.GONE);
-                welcome.setVisibility(View.GONE);
-              }
-            })
-            .setStartDelay(450)
-            .start();
-      }
-    });
+//    mVerticalRV.addOnScrollListener(new OnScrollObserver() {
+//      @Override
+//      public void show() {
+//        myToolbar.animate()
+//            .translationY(0)
+//            .setInterpolator(new DecelerateInterpolator(1))
+//            .setStartDelay(0)
+//            .start();
+//        mHorizontalRV.animate()
+//            .translationY(0)
+//            .setInterpolator(new DecelerateInterpolator(1))
+//            .setStartDelay(0)
+//            .start();
+//        welcome.animate().translationY(0)
+//            .setInterpolator(new DecelerateInterpolator(1))
+//            .setListener(new AnimatorListener() {
+//              @Override
+//              public void onAnimationStart(Animator animator) {
+//                mHorizontalRV.setVisibility(View.VISIBLE);
+//                myToolbar.setVisibility(View.VISIBLE);
+//                welcome.setVisibility(View.VISIBLE);
+//              }
+//              @Override
+//              public void onAnimationEnd(Animator animator) {
+//              }
+//              @Override
+//              public void onAnimationCancel(Animator animator) {
+//                mHorizontalRV.setVisibility(View.VISIBLE);
+//                myToolbar.setVisibility(View.VISIBLE);
+//                welcome.setVisibility(View.VISIBLE);
+//              }
+//              @Override
+//              public void onAnimationRepeat(Animator animator) {
+//                mHorizontalRV.setVisibility(View.VISIBLE);
+//                myToolbar.setVisibility(View.VISIBLE);
+//                welcome.setVisibility(View.VISIBLE);
+//              }
+//            })
+//            .setStartDelay(0)
+//            .start();
+//      }
+//      @Override
+//      public void hide() {
+//        myToolbar.animate()
+//            .translationY(-myToolbar.getHeight())
+//            .setInterpolator(new AccelerateInterpolator(1))
+//            .setStartDelay(450)
+//            .start();
+//        mHorizontalRV.animate()
+//            .translationY(-(myToolbar.getHeight() + mHorizontalRV.getHeight() + welcome.getHeight() + MARGIN_TOP))
+//            .setInterpolator(new AccelerateInterpolator(1))
+//            .setStartDelay(150)
+//            .start();
+//        welcome.animate().translationY(-(myToolbar.getHeight() + welcome.getHeight() + MARGIN_TOP))
+//            .setInterpolator(new AccelerateInterpolator(1))
+//            .setListener(new AnimatorListener() {
+//              @Override
+//              public void onAnimationStart(Animator animator) {
+//                mHorizontalRV.setVisibility(View.GONE);
+//                myToolbar.setVisibility(View.GONE);
+//                welcome.setVisibility(View.GONE);
+//                mVerticalRV.setNestedScrollingEnabled(false);
+//              }
+//              @Override
+//              public void onAnimationEnd(Animator animator) {
+//                mVerticalRV.setVerticalScrollbarPosition(2);
+//
+////                mVerticalRV.smoothScrollToPosition(2);
+//              }
+//              @Override
+//              public void onAnimationCancel(Animator animator) {
+//                mHorizontalRV.setVisibility(View.GONE);
+//                myToolbar.setVisibility(View.GONE);
+//                welcome.setVisibility(View.GONE);
+//              }
+//              @Override
+//              public void onAnimationRepeat(Animator animator) {
+//                mHorizontalRV.setVisibility(View.GONE);
+//                myToolbar.setVisibility(View.GONE);
+//                welcome.setVisibility(View.GONE);
+//              }
+//            })
+//            .setStartDelay(450)
+//            .start();
+//      }
+//    });
 
     mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
       @Override
@@ -307,14 +314,14 @@ public class MainActivity extends AppCompatActivity {
       }
     });
 
-    SnapHelper snapHelper = new PagerSnapHelper();
-    snapHelper.attachToRecyclerView(mHorizontalRV);
-    LayoutManager mHorizontalLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-    mHorizontalRV.setLayoutManager(mHorizontalLayoutManager);
-    mAdapterHor = new RecyclerAdapter(dummy_data);
-    mHorizontalRV.setAdapter(mAdapterHor);
+//    SnapHelper snapHelper = new PagerSnapHelper();
+//    snapHelper.attachToRecyclerView(mHorizontalRV);
+//    LayoutManager mHorizontalLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+//    mHorizontalRV.setLayoutManager(mHorizontalLayoutManager);
+//    mAdapterHor = new RecyclerAdapter(dummy_data);
+//    mHorizontalRV.setAdapter(mAdapterHor);
 
-    LayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+    LayoutManager mLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
     mVerticalRV.setLayoutManager(mLayoutManager);
     mAdapter = new RecyclerAdapter(dummy_data);
     mVerticalRV.setAdapter(mAdapter);
