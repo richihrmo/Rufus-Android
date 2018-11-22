@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:background="@color/colorNext"
   android:layout_width="match_parent"
@@ -24,7 +23,7 @@
     android:layout_marginTop="72dp"
     android:layout_centerHorizontal="true"
     android:cropToPadding="true"
-    android:src="@drawable/com_facebook_button_login_logo"
+    android:src="@drawable/ic_launcher_foreground"
     />
 
   <com.facebook.login.widget.LoginButton

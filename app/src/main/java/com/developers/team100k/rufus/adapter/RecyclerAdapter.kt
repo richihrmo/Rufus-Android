@@ -1,21 +1,28 @@
 package com.developers.team100k.rufus.adapter
 
-import androidx.recyclerview.widget.RecyclerView
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.developers.team100k.rufus.R
+import com.developers.team100k.rufus.entity.Headline
 
 /**
  * Created by Richard Hrmo.
  */
-class RecyclerAdapter(private val dataSet: List<String>):
+class RecyclerAdapter(private var dataSet: List<Headline>):
         RecyclerView.Adapter<RecyclerAdapter.ViewHolder>(){
+
+    var context: Context? = null
 
     override fun onCreateViewHolder(parent: ViewGroup,
                                     viewType: Int): ViewHolder {
+
+        context = parent.context
         // create a new view
         val cardView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.recycler_item, parent, false) as LinearLayout
@@ -23,14 +30,16 @@ class RecyclerAdapter(private val dataSet: List<String>):
         return ViewHolder(cardView)
     }
 
-//    override fun getItemCount() = dataSet.size
-    override fun getItemCount() = 30
+    //    override fun getItemCount() = dataSet.size
+    override fun getItemCount() = dataSet.size
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.title.setText("How I went from newbie to Software Engineer in 9 months while working full time")
-        holder.subtitle.setText("In this post, I'll share how I went from zero(ish) to a six-figure software engineering job offer in nine months while working full time and being self-taught.")
-        holder.titleImage.setImageResource(R.drawable.ic_launcher_foreground)
+        holder.title.setText(dataSet[position].title)
+        holder.subtitle.setText(dataSet[position].subtitle)
+        Glide.with(context!!)
+                .load("https://thenypost.files.wordpress.com/2018/11/trump-judges.jpg?quality=90&strip=all&w=618&h=410&crop=1")
+                .into(holder.titleImage)
     }
 
     class ViewHolder(val ll: LinearLayout) : RecyclerView.ViewHolder(ll){

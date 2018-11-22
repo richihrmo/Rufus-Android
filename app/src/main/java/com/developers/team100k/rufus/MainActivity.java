@@ -4,9 +4,14 @@ import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager.widget.ViewPager.SimpleOnPageChangeListener;
+import com.developers.team100k.rufus.adapter.TabLayoutPagerAdapter;
+import com.developers.team100k.rufus.entity.Headline;
+import com.developers.team100k.rufus.processing.ArticlesParser;
+import com.developers.team100k.rufus.processing.CategoriesParser;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener;
 import com.google.android.material.tabs.TabLayout;
@@ -50,8 +55,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.observers.DefaultObserver;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import org.greenrobot.eventbus.EventBus;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -61,10 +69,10 @@ public class MainActivity extends AppCompatActivity {
   TabLayout tabLayout;
   @BindView(R.id.nav_view)
   NavigationView mNavigationView;
-  @BindView(R.id.vertical_recyclerview)
-  RecyclerView mVerticalRV;
-  @BindView(R.id.swipe)
-  SwipeRefreshLayout mRefreshLayout;
+//  @BindView(R.id.vertical_recyclerview)
+//  RecyclerView mVerticalRV;
+//  @BindView(R.id.swipe)
+//  SwipeRefreshLayout mRefreshLayout;
   @BindView(R.id.toolbar)
   Toolbar myToolbar;
   @BindView(R.id.viewpager)
@@ -75,12 +83,13 @@ public class MainActivity extends AppCompatActivity {
   private boolean google = false;
   private RecyclerView.Adapter mAdapterHor;
   private RecyclerView.Adapter mAdapter;
-  private Object randomJson;
-  private static final int MARGIN_TOP = 56;
-  private List<String> dummy_data = new ArrayList<>();
+  private List<String> random;
   private FirebaseAuth mAuth;
   private FirebaseUser mFirebaseUser;
   private DatabaseReference mDatabase;
+  private List<Headline> listHeadline;
+  private TabLayoutPagerAdapter mTabLayoutPagerAdapter;
+  private EventBus mEventBus = EventBus.getDefault();
 
   private Intent loginActivity;
 
@@ -90,6 +99,11 @@ public class MainActivity extends AppCompatActivity {
     setContentView(R.layout.activity_main);
     ButterKnife.bind(this);
     setSupportActionBar(myToolbar);
+
+    if (mDatabase != null){
+      FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+    }
+
     mAuth = FirebaseAuth.getInstance();
     mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -101,20 +115,6 @@ public class MainActivity extends AppCompatActivity {
 
     mFirebaseUser = mAuth.getCurrentUser();
     System.out.println(mFirebaseUser.getDisplayName());
-
-    mDatabase.child("categories").addListenerForSingleValueEvent(new ValueEventListener() {
-      @Override
-      public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-        randomJson = dataSnapshot.getValue(Object.class);
-        System.out.println(randomJson);
-      }
-
-      @Override
-      public void onCancelled(@NonNull DatabaseError databaseError) {
-        System.out.println("Fail to read.");
-      }
-    });
-
 
     View header = mNavigationView.getHeaderView(0);
     TextView loggedUsing = header.findViewById(R.id.loggedwith);
@@ -152,35 +152,76 @@ public class MainActivity extends AppCompatActivity {
 
     JsonParser dataParser = new JsonParser(this, "");
     dataParser.jsonToCollection(dataParser.getJson());
-    
 
-    tabLayout.addTab(tabLayout.newTab().setText("Politics"));
-    tabLayout.addTab(tabLayout.newTab().setText("Sports"));
-    tabLayout.addTab(tabLayout.newTab().setText("Peto"));
-    tabLayout.addTab(tabLayout.newTab().setText("je"));
-    tabLayout.addTab(tabLayout.newTab().setText("Noob"));
-    tabLayout.addTab(tabLayout.newTab().setText("Peto"));
-    tabLayout.addTab(tabLayout.newTab().setText("je"));
-    tabLayout.addTab(tabLayout.newTab().setText("Noob"));
-    tabLayout.addTab(tabLayout.newTab().setText("Peto"));
-    tabLayout.addTab(tabLayout.newTab().setText("je"));
-    tabLayout.addTab(tabLayout.newTab().setText("Noob"));
-    tabLayout.addTab(tabLayout.newTab().setText("Peto"));
-    tabLayout.addTab(tabLayout.newTab().setText("je"));
-    tabLayout.addTab(tabLayout.newTab().setText("Noob"));
+    ArticlesParser articlesParser = new ArticlesParser(mDatabase);
+    articlesParser.call();
+
+    io.reactivex.Observer<Object> articleObserver = new DefaultObserver<Object>() {
+      @Override
+      public void onNext(Object o) {
+        listHeadline = (List<Headline>) o;
+        String string = mTabLayoutPagerAdapter.getPageTitle(mViewPager.getCurrentItem()).toString();
+        Log.e("article", string);
+        mEventBus.postSticky(listHeadline);
+        Log.e("articleObserver", "onNext");
+      }
+
+      @Override
+      public void onError(Throwable e) {
+        Log.e("Observer", "onError");
+      }
+
+      @Override
+      public void onComplete() {
+        Log.e("Observer", "onComplete");
+      }
+    };
+    articlesParser.getData().subscribe(articleObserver);
+
+    CategoriesParser categoriesParser = new CategoriesParser(mDatabase);
+    categoriesParser.call();
+
+    io.reactivex.Observer<Object> categoryObserver = new DefaultObserver<Object>() {
+      @Override
+      public void onNext(Object o) {
+        random = (List<String>) o;
+        mTabLayoutPagerAdapter = new TabLayoutPagerAdapter(getSupportFragmentManager(), random);
+        mViewPager.setAdapter(mTabLayoutPagerAdapter);
+        Log.e("categoryObserver", "onNext");
+        tabLayout.addTab(tabLayout.newTab().setText(""));
+      }
+
+      @Override
+      public void onError(Throwable e) {
+        Log.e("Observer", "onError");
+      }
+
+      @Override
+      public void onComplete() {
+        Log.e("Observer", "onComplete");
+      }
+    };
+    categoriesParser.getData().subscribe(categoryObserver);
 
     tabLayout.setupWithViewPager(mViewPager);
-    mViewPager.addOnPageChangeListener(new SimpleOnPageChangeListener(){
-      @Override
-      public void onPageSelected(int position) {
-        tabLayout.setScrollPosition(position, 0,false);
-      }
-    });
 
     tabLayout.addOnTabSelectedListener(new OnTabSelectedListener() {
       @Override
       public void onTabSelected(Tab tab) {
-        //TODO
+        if (mEventBus != null && listHeadline != null){
+          Log.e("tab", tab.getText().toString());
+          List<Headline> list = new ArrayList<>();
+          if (String.valueOf(tab.getText()).equals("All")){
+            list = listHeadline;
+          } else if (listHeadline != null){
+            for (Headline headline : listHeadline ){
+              if (headline.getCategory() != null && headline.getCategory().equals(String.valueOf(tab.getText()))){
+                list.add(headline);
+              }
+            }
+          }
+          mEventBus.postSticky(list);
+        }
       }
 
       @Override
@@ -216,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
       }
     });
 
-    mRefreshLayout.setEnabled(true);
+//    mRefreshLayout.setEnabled(true);
 //    mHorizontalRV.setHasFixedSize(true);
 
 //    mVerticalRV.addOnScrollListener(new OnScrollObserver() {
@@ -306,13 +347,13 @@ public class MainActivity extends AppCompatActivity {
 //      }
 //    });
 
-    mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
-      @Override
-      public void onRefresh() {
-        Toast.makeText(MainActivity.this, "Hello", Toast.LENGTH_LONG).show();
-        mRefreshLayout.setRefreshing(false);
-      }
-    });
+//    mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+//      @Override
+//      public void onRefresh() {
+//        Toast.makeText(MainActivity.this, "Hello", Toast.LENGTH_LONG).show();
+//        mRefreshLayout.setRefreshing(false);
+//      }
+//    });
 
 //    SnapHelper snapHelper = new PagerSnapHelper();
 //    snapHelper.attachToRecyclerView(mHorizontalRV);
@@ -321,10 +362,10 @@ public class MainActivity extends AppCompatActivity {
 //    mAdapterHor = new RecyclerAdapter(dummy_data);
 //    mHorizontalRV.setAdapter(mAdapterHor);
 
-    LayoutManager mLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
-    mVerticalRV.setLayoutManager(mLayoutManager);
-    mAdapter = new RecyclerAdapter(dummy_data);
-    mVerticalRV.setAdapter(mAdapter);
+//    LayoutManager mLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
+//    mVerticalRV.setLayoutManager(mLayoutManager);
+//    mAdapter = new RecyclerAdapter(dummy_data);
+//    mVerticalRV.setAdapter(mAdapter);
   }
 
   @Override

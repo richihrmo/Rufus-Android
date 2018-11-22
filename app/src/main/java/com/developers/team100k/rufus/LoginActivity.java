@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
   @BindView(R.id.google_login) SignInButton mGoogleButton;
   private GoogleSignInClient googleSignInClient;
   private FirebaseAuth mAuth;
-  private ProgressDialog progressDialog;
+//  private ProgressDialog progressDialog;
   private CallbackManager callbackManager;
 
   private static final String EMAIL = "email";
@@ -54,55 +54,59 @@ public class LoginActivity extends AppCompatActivity {
     setContentView(R.layout.activity_login);
     ButterKnife.bind(this);
     mAuth = FirebaseAuth.getInstance();
-    FacebookSdk.sdkInitialize(getApplicationContext());
     mainActivity = new Intent(LoginActivity.this, MainActivity.class);
+    FirebaseUser currentUser = mAuth.getCurrentUser();
+    System.out.println(currentUser);
+    if (currentUser != null){
+      startActivity(mainActivity);
+      finish();
+    } else {
+      FacebookSdk.sdkInitialize(getApplicationContext());
+      callbackManager = CallbackManager.Factory.create();
+      mFacebookButton.setReadPermissions(Arrays.asList(EMAIL));
+      mFacebookButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        @Override
+        public void onSuccess(LoginResult loginResult) {
+//        progressDialog = ProgressDialog.show(LoginActivity.this, "", "Loading", true);
+          startActivity(mainActivity);
+          finish();
+        }
 
-    callbackManager = CallbackManager.Factory.create();
-    mFacebookButton.setReadPermissions(Arrays.asList(EMAIL));
-    mFacebookButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-      @Override
-      public void onSuccess(LoginResult loginResult) {
-        progressDialog = ProgressDialog.show(LoginActivity.this, "", "Loading", true);
-        startActivity(mainActivity);
-        finish();
-      }
+        @Override
+        public void onCancel() {
+          Toast.makeText(LoginActivity.this, "Facebook login was cancelled", Toast.LENGTH_SHORT).show();
+        }
 
-      @Override
-      public void onCancel() {
-        Toast.makeText(LoginActivity.this, "Facebook login was cancelled", Toast.LENGTH_SHORT).show();
-      }
-
-      @Override
-      public void onError(FacebookException error) {
+        @Override
+        public void onError(FacebookException error) {
 //        Toast.makeText(LoginActivity.this, "Could not login with Facebook, try again later.", Toast.LENGTH_SHORT).show();
-        Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
-        Log.e("Login Error" ,error.toString());
-      }
-    });
+          Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+          Log.e("Login Error" ,error.toString());
+        }
+      });
 
-    mGoogleButton.setSize(SignInButton.SIZE_WIDE);
-    mGoogleButton.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        progressDialog = ProgressDialog.show(LoginActivity.this, "", "Loading", true);
-        signIn();
-      }
-    });
+      mGoogleButton.setSize(SignInButton.SIZE_WIDE);
+      mGoogleButton.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View view) {
+//        progressDialog = ProgressDialog.show(LoginActivity.this, "", "Loading", true);
+          signIn();
+        }
+      });
 
-    GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions
-        .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestIdToken(getString(R.string.default_web_client_id))
-        .requestEmail()
-        .build();
-    googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
+      GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions
+          .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+          .requestIdToken(getString(R.string.default_web_client_id))
+          .requestEmail()
+          .build();
+      googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
+    }
   }
 
   @Override
   protected void onStart() {
     super.onStart();
     Intent intent = getIntent();
-    FirebaseUser currentUser = mAuth.getCurrentUser();
-    System.out.println(currentUser);
     if (intent.getAction() != null && intent.getAction().equals("logout"))
       googleSignInClient.signOut();
     GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
@@ -111,7 +115,7 @@ public class LoginActivity extends AppCompatActivity {
       mFacebookButton.setVisibility(View.VISIBLE);
       mGoogleButton.setVisibility(View.VISIBLE);
     } else {
-      progressDialog = ProgressDialog.show(LoginActivity.this, "", "Loading", true);
+//      progressDialog = ProgressDialog.show(LoginActivity.this, "", "Loading", true);
       mGoogleButton.setVisibility(View.GONE);
       mFacebookButton.setVisibility(View.GONE);
       startActivity(mainActivity);
@@ -122,13 +126,13 @@ public class LoginActivity extends AppCompatActivity {
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    if (progressDialog != null) {
-      progressDialog.dismiss();
-    }
+//    if (progressDialog != null) {
+//      progressDialog.dismiss();
+//    }
   }
 
   private void signIn(){
-    progressDialog.dismiss();
+//    progressDialog.dismiss();
     Intent signInIntent = googleSignInClient.getSignInIntent();
     startActivityForResult(signInIntent, RC_SIGN_IN);
   }
@@ -172,6 +176,7 @@ public class LoginActivity extends AppCompatActivity {
   private void handleSignInResult(Task<GoogleSignInAccount> completedTask){
     try {
       GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+      assert account != null;
       firebaseAuthWithGoogle(account);
       startActivity(mainActivity);
       finish();
