@@ -6,8 +6,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager.widget.ViewPager.SimpleOnPageChangeListener;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.developers.team100k.rufus.adapter.TabLayoutPagerAdapter;
 import com.developers.team100k.rufus.entity.Headline;
 import com.developers.team100k.rufus.processing.ArticlesParser;
@@ -69,10 +72,6 @@ public class MainActivity extends AppCompatActivity {
   TabLayout tabLayout;
   @BindView(R.id.nav_view)
   NavigationView mNavigationView;
-//  @BindView(R.id.vertical_recyclerview)
-//  RecyclerView mVerticalRV;
-//  @BindView(R.id.swipe)
-//  SwipeRefreshLayout mRefreshLayout;
   @BindView(R.id.toolbar)
   Toolbar myToolbar;
   @BindView(R.id.viewpager)
@@ -90,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
   private List<Headline> listHeadline;
   private TabLayoutPagerAdapter mTabLayoutPagerAdapter;
   private EventBus mEventBus = EventBus.getDefault();
+  private MaterialDialog mMaterialDialog;
 
   private Intent loginActivity;
 
@@ -156,6 +156,11 @@ public class MainActivity extends AppCompatActivity {
     ArticlesParser articlesParser = new ArticlesParser(mDatabase);
     articlesParser.call();
 
+    mMaterialDialog = new MaterialDialog.Builder(this)
+        .content("Loading content...")
+        .build();
+    mMaterialDialog.show();
+
     io.reactivex.Observer<Object> articleObserver = new DefaultObserver<Object>() {
       @Override
       public void onNext(Object o) {
@@ -163,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
         String string = mTabLayoutPagerAdapter.getPageTitle(mViewPager.getCurrentItem()).toString();
         Log.e("article", string);
         mEventBus.postSticky(listHeadline);
+        mMaterialDialog.dismiss();
         Log.e("articleObserver", "onNext");
       }
 
@@ -204,7 +210,6 @@ public class MainActivity extends AppCompatActivity {
     categoriesParser.getData().subscribe(categoryObserver);
 
     tabLayout.setupWithViewPager(mViewPager);
-
     tabLayout.addOnTabSelectedListener(new OnTabSelectedListener() {
       @Override
       public void onTabSelected(Tab tab) {
@@ -257,7 +262,6 @@ public class MainActivity extends AppCompatActivity {
       }
     });
 
-//    mRefreshLayout.setEnabled(true);
 //    mHorizontalRV.setHasFixedSize(true);
 
 //    mVerticalRV.addOnScrollListener(new OnScrollObserver() {
@@ -376,6 +380,14 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
     return super.onOptionsItemSelected(item);
+  }
+
+  public void itemClick(View view){
+    Log.e("click", mViewPager.getAdapter().getPageTitle(mViewPager.getCurrentItem()).toString());
+    Log.e("click", "" + ((TextView)((ConstraintLayout) view).getChildAt(6)).getText());
+    Intent intent = new Intent(this, ShowActivity.class);
+    intent.putExtra("article_id", ((TextView)((ConstraintLayout) view).getChildAt(6)).getText());
+    startActivity(intent);
   }
 
 }

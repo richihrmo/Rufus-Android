@@ -121,7 +121,8 @@ class ArticlesParser(val mDatabase: DatabaseReference){
             if (f != null){
                 textAuthor = f.get("name")
             }
-            val headline = Headline(textAuthor,
+            val headline = Headline(mapPosts.keys.elementAt(i),
+                    textAuthor,
                     current.get("title"),
                     current.get("subtitle"),
                     textCategory,

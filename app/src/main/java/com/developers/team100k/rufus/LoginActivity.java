@@ -57,10 +57,7 @@ public class LoginActivity extends AppCompatActivity {
     mainActivity = new Intent(LoginActivity.this, MainActivity.class);
     FirebaseUser currentUser = mAuth.getCurrentUser();
     System.out.println(currentUser);
-    if (currentUser != null){
-      startActivity(mainActivity);
-      finish();
-    } else {
+    if (currentUser == null){
       FacebookSdk.sdkInitialize(getApplicationContext());
       callbackManager = CallbackManager.Factory.create();
       mFacebookButton.setReadPermissions(Arrays.asList(EMAIL));
@@ -132,7 +129,6 @@ public class LoginActivity extends AppCompatActivity {
   }
 
   private void signIn(){
-//    progressDialog.dismiss();
     Intent signInIntent = googleSignInClient.getSignInIntent();
     startActivityForResult(signInIntent, RC_SIGN_IN);
   }
