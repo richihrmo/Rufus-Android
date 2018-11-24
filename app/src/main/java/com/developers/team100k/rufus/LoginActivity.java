@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
   @BindView(R.id.google_login) SignInButton mGoogleButton;
   private GoogleSignInClient googleSignInClient;
   private FirebaseAuth mAuth;
-//  private ProgressDialog progressDialog;
+  //  private ProgressDialog progressDialog;
   private CallbackManager callbackManager;
 
   private static final String EMAIL = "email";
@@ -65,8 +65,8 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void onSuccess(LoginResult loginResult) {
 //        progressDialog = ProgressDialog.show(LoginActivity.this, "", "Loading", true);
-          startActivity(mainActivity);
           finish();
+          startActivity(mainActivity);
         }
 
         @Override

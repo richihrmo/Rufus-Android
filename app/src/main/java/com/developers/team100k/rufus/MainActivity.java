@@ -248,11 +248,11 @@ public class MainActivity extends AppCompatActivity {
             loginActivity = new Intent(MainActivity.this, LoginActivity.class);
             if (facebook) LoginManager.getInstance().logOut();
             if (google) loginActivity.setAction("logout");
-              startActivity(loginActivity);
-              finish();
-              break;
-            default:
-              break;
+            startActivity(loginActivity);
+            finish();
+            break;
+          default:
+            break;
         }
         item.setChecked(true);
         mDrawerLayout.closeDrawers();
