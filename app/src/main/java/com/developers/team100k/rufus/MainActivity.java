@@ -8,10 +8,12 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager.widget.ViewPager.SimpleOnPageChangeListener;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.developers.team100k.rufus.adapter.TabLayoutPagerAdapter;
+import com.developers.team100k.rufus.entity.Dialog;
 import com.developers.team100k.rufus.entity.Headline;
 import com.developers.team100k.rufus.processing.ArticlesParser;
 import com.developers.team100k.rufus.processing.CategoriesParser;
@@ -63,6 +65,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -80,8 +83,6 @@ public class MainActivity extends AppCompatActivity {
   private UserProfile user;
   private boolean facebook = false;
   private boolean google = false;
-  private RecyclerView.Adapter mAdapterHor;
-  private RecyclerView.Adapter mAdapter;
   private List<String> random;
   private FirebaseAuth mAuth;
   private FirebaseUser mFirebaseUser;
@@ -150,39 +151,9 @@ public class MainActivity extends AppCompatActivity {
       }
     }
 
-    JsonParser dataParser = new JsonParser(this, "");
-    dataParser.jsonToCollection(dataParser.getJson());
-
-    ArticlesParser articlesParser = new ArticlesParser(mDatabase);
-    articlesParser.call();
-
     mMaterialDialog = new MaterialDialog.Builder(this)
         .content("Loading content...")
         .build();
-    mMaterialDialog.show();
-
-    io.reactivex.Observer<Object> articleObserver = new DefaultObserver<Object>() {
-      @Override
-      public void onNext(Object o) {
-        listHeadline = (List<Headline>) o;
-        String string = mTabLayoutPagerAdapter.getPageTitle(mViewPager.getCurrentItem()).toString();
-        Log.e("article", string);
-        mEventBus.postSticky(listHeadline);
-        mMaterialDialog.dismiss();
-        Log.e("articleObserver", "onNext");
-      }
-
-      @Override
-      public void onError(Throwable e) {
-        Log.e("Observer", "onError");
-      }
-
-      @Override
-      public void onComplete() {
-        Log.e("Observer", "onComplete");
-      }
-    };
-    articlesParser.getData().subscribe(articleObserver);
 
     CategoriesParser categoriesParser = new CategoriesParser(mDatabase);
     categoriesParser.call();
@@ -210,35 +181,32 @@ public class MainActivity extends AppCompatActivity {
     categoriesParser.getData().subscribe(categoryObserver);
 
     tabLayout.setupWithViewPager(mViewPager);
-    tabLayout.addOnTabSelectedListener(new OnTabSelectedListener() {
-      @Override
-      public void onTabSelected(Tab tab) {
-        if (mEventBus != null && listHeadline != null){
-          Log.e("tab", tab.getText().toString());
-          List<Headline> list = new ArrayList<>();
-          if (String.valueOf(tab.getText()).equals("All")){
-            list = listHeadline;
-          } else if (listHeadline != null){
-            for (Headline headline : listHeadline ){
-              if (headline.getCategory() != null && headline.getCategory().equals(String.valueOf(tab.getText()))){
-                list.add(headline);
-              }
-            }
-          }
-          mEventBus.postSticky(list);
-        }
-      }
-
-      @Override
-      public void onTabUnselected(Tab tab) {
-
-      }
-
-      @Override
-      public void onTabReselected(Tab tab) {
-
-      }
-    });
+//    tabLayout.addOnTabSelectedListener(new OnTabSelectedListener() {
+//      @Override
+//      public void onTabSelected(Tab tab) {
+//        if (mEventBus != null){
+//          Log.e("tab", tab.getText().toString());
+//          mEventBus.postSticky(tab.getText().toString());
+////          List<Headline> list = new ArrayList<>();
+////          if (String.valueOf(tab.getText()).equals("All")){
+////            list = listHeadline;
+////          } else if (listHeadline != null){
+////            for (Headline headline : listHeadline ){
+////              if (headline.getCategory() != null && headline.getCategory().equals(String.valueOf(tab.getText()))){
+////                list.add(headline);
+////              }
+////            }
+////          }
+////          mEventBus.postSticky(list);
+//        }
+//      }
+//
+//      @Override
+//      public void onTabUnselected(Tab tab) {}
+//
+//      @Override
+//      public void onTabReselected(Tab tab) {}
+//    });
 
     mNavigationView.setNavigationItemSelectedListener(new OnNavigationItemSelectedListener() {
       @Override
@@ -382,11 +350,54 @@ public class MainActivity extends AppCompatActivity {
     return super.onOptionsItemSelected(item);
   }
 
+  @Override
+  protected void onStart() {
+    super.onStart();
+    mEventBus.register(this);
+    Log.e("MainActivity", "start");
+  }
+
+  @Override
+  protected void onStop() {
+    super.onStop();
+    mEventBus.unregister(this);
+    Log.e("MainActivity", "stop");
+  }
+
+  @Subscribe(sticky = true)
+  public void onEvent(Dialog string){
+    switch (string){
+      case SHOW:
+        mMaterialDialog.show();
+        break;
+      case DISMISS:
+        mMaterialDialog.dismiss();
+        break;
+      default:
+        break;
+    }
+  }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    Log.e("MainActivity", "destroy");
+  }
+
+  @Override
+  protected void onRestart() {
+    super.onRestart();
+    Log.e("MainActivity", "restart");
+  }
+
   public void itemClick(View view){
+    Log.e("click", view.getId() + "");
     Log.e("click", mViewPager.getAdapter().getPageTitle(mViewPager.getCurrentItem()).toString());
     Log.e("click", "" + ((TextView)((ConstraintLayout) view).getChildAt(6)).getText());
     Intent intent = new Intent(this, ShowActivity.class);
     intent.putExtra("article_id", ((TextView)((ConstraintLayout) view).getChildAt(6)).getText());
+    intent.putExtra("title", "One morning, when Gregor Samsa woke from troubled dreams");
+    intent.putExtra("subtitle", "He found himself transformed in his bed into a horrible vermin");
     startActivity(intent);
   }
 

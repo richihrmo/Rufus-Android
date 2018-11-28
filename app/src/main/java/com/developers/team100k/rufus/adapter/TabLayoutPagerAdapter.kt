@@ -15,7 +15,13 @@ import com.developers.team100k.rufus.entity.Headline
  */
 class TabLayoutPagerAdapter(val fm: FragmentManager, val data: List<String>) : FragmentStatePagerAdapter(fm){
 
-    override fun getItem(position: Int): Fragment = TabLayoutFragment()
+    override fun getItem(position: Int): Fragment {
+        val fragment = TabLayoutFragment()
+        val bundle = Bundle()
+        bundle.putString("category", data[position])
+        fragment.arguments = bundle
+        return fragment
+    }
 
     override fun getCount(): Int = data.size
 

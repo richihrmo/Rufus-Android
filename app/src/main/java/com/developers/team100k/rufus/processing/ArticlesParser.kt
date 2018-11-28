@@ -1,6 +1,7 @@
 package com.developers.team100k.rufus.processing
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import com.developers.team100k.rufus.entity.Article
 import com.developers.team100k.rufus.entity.Headline
 import com.developers.team100k.rufus.entity.Page
@@ -27,12 +28,12 @@ class ArticlesParser(val mDatabase: DatabaseReference){
     var doneContent = false
     var doneTeam = false
 
-    lateinit var list: List<Any>
+
     lateinit var listOfArticles: MutableList<Headline>
     var data = PublishSubject.create<Any>()
     val jsonParser = JsonParser()
 
-    fun call(){
+    fun call() {
         callDatabase()
         secondCall()
         categoryCall()
@@ -96,6 +97,9 @@ class ArticlesParser(val mDatabase: DatabaseReference){
 
             override fun onCancelled(databaseError: DatabaseError) {
                 println("Fail to read.")
+                mapTeam = mutableMapOf()
+                doneTeam = true
+                allDone()
             }
         })
     }
@@ -117,9 +121,11 @@ class ArticlesParser(val mDatabase: DatabaseReference){
             if (v != null){
                 textCategory = v.get("name")
             }
-            val f = mapTeam[current.get("author")]
-            if (f != null){
-                textAuthor = f.get("name")
+            if (mapTeam.isNotEmpty()){
+                val f = mapTeam[current.get("author")]
+                if (f != null){
+                    textAuthor = f.get("name")
+                }
             }
             val headline = Headline(mapPosts.keys.elementAt(i),
                     textAuthor,

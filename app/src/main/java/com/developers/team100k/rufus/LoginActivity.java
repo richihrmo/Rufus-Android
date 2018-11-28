@@ -2,6 +2,7 @@ package com.developers.team100k.rufus;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.bumptech.glide.Glide;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -39,6 +41,8 @@ public class LoginActivity extends AppCompatActivity {
 
   @BindView(R.id.facebook_login) LoginButton mFacebookButton;
   @BindView(R.id.google_login) SignInButton mGoogleButton;
+  @BindView(R.id.logo_login)
+  ImageView mImageView;
   private GoogleSignInClient googleSignInClient;
   private FirebaseAuth mAuth;
   //  private ProgressDialog progressDialog;
@@ -53,11 +57,13 @@ public class LoginActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_login);
     ButterKnife.bind(this);
+    Glide.with(this)
+        .load("https://gdb.alhurra.eu/85D4F24D-76C5-452F-80E0-9DA60A71A174_cx0_cy22_cw0_w1023_r1_s.png")
+        .into(mImageView);
     mAuth = FirebaseAuth.getInstance();
     mainActivity = new Intent(LoginActivity.this, MainActivity.class);
     FirebaseUser currentUser = mAuth.getCurrentUser();
     System.out.println(currentUser);
-    if (currentUser == null){
       FacebookSdk.sdkInitialize(getApplicationContext());
       callbackManager = CallbackManager.Factory.create();
       mFacebookButton.setReadPermissions(Arrays.asList(EMAIL));
@@ -97,7 +103,6 @@ public class LoginActivity extends AppCompatActivity {
           .requestEmail()
           .build();
       googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
-    }
   }
 
   @Override

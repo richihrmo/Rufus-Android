@@ -49,7 +49,9 @@
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
     </activity>
-    <activity android:name=".ShowActivity">
+    <activity android:name=".ShowActivity"
+      android:parentActivityName=".MainActivity"
+      android:configChanges="orientation|screenSize|screenLayout">
     </activity>
   </application>
 
