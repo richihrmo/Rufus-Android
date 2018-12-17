@@ -1,7 +1,8 @@
 package com.developers.team100k.rufus;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
+import android.widget.ImageView;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.bumptech.glide.Glide;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -35,13 +37,22 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import java.util.Arrays;
 
 
+/**
+ * Activity handling all login operations
+ */
+
 public class LoginActivity extends AppCompatActivity {
 
-  @BindView(R.id.facebook_login) LoginButton mFacebookButton;
-  @BindView(R.id.google_login) SignInButton mGoogleButton;
+  @BindView(R.id.facebook_login)
+  LoginButton mFacebookButton;
+  @BindView(R.id.google_login)
+  SignInButton mGoogleButton;
+  @BindView(R.id.logo_login)
+  ImageView mImageView;
+  @BindView(R.id.terms)
+  TextView mTextView;
   private GoogleSignInClient googleSignInClient;
   private FirebaseAuth mAuth;
-  //  private ProgressDialog progressDialog;
   private CallbackManager callbackManager;
 
   private static final String EMAIL = "email";
@@ -57,7 +68,13 @@ public class LoginActivity extends AppCompatActivity {
     mainActivity = new Intent(LoginActivity.this, MainActivity.class);
     FirebaseUser currentUser = mAuth.getCurrentUser();
     System.out.println(currentUser);
-    if (currentUser == null){
+    mTextView.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        Intent intent = new Intent(LoginActivity.this, PageActivity.class);
+        startActivity(intent);
+      }
+    });
       FacebookSdk.sdkInitialize(getApplicationContext());
       callbackManager = CallbackManager.Factory.create();
       mFacebookButton.setReadPermissions(Arrays.asList(EMAIL));
@@ -86,7 +103,6 @@ public class LoginActivity extends AppCompatActivity {
       mGoogleButton.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View view) {
-//        progressDialog = ProgressDialog.show(LoginActivity.this, "", "Loading", true);
           signIn();
         }
       });
@@ -97,7 +113,6 @@ public class LoginActivity extends AppCompatActivity {
           .requestEmail()
           .build();
       googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
-    }
   }
 
   @Override
@@ -118,14 +133,6 @@ public class LoginActivity extends AppCompatActivity {
       startActivity(mainActivity);
       finish();
     }
-  }
-
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-//    if (progressDialog != null) {
-//      progressDialog.dismiss();
-//    }
   }
 
   private void signIn(){
@@ -155,15 +162,11 @@ public class LoginActivity extends AppCompatActivity {
               // Sign in success, update UI with the signed-in user's information
               Log.d("Firebase", "signInWithCredential:success");
               FirebaseUser user = mAuth.getCurrentUser();
-//              updateUI(user);
             } else {
               // If sign in fails, display a message to the user.
               Log.w("Firebase", "signInWithCredential:failure", task.getException());
               System.out.println("Authentication Failed.");
-//              updateUI(null);
             }
-
-            // ...
           }
         });
   }
@@ -176,10 +179,10 @@ public class LoginActivity extends AppCompatActivity {
       firebaseAuthWithGoogle(account);
       startActivity(mainActivity);
       finish();
-      //update UI
     } catch (ApiException e){
       Log.w("Sign-in", "failed code: " + e.getStatusCode());
-      //update UI null
     }
   }
+
+
 }

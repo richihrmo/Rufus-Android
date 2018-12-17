@@ -5,26 +5,28 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
+  android:background="@color/colorNextAccent"
   tools:context=".ShowActivity">
 
   <androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/appbar"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      app:layout_scrollFlags="scroll|exitUntilCollapsed"
+      android:layout_height="216dp"
       android:fitsSystemWindows="true">
 
       <com.google.android.material.appbar.CollapsingToolbarLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_scrollFlags="scroll|exitUntilCollapsed"
         app:contentScrim="?attr/colorPrimary"
+        app:expandedTitleMarginEnd="64dp"
         app:expandedTitleMarginStart="48dp"
-        app:expandedTitleMarginEnd="64dp">
+        android:fitsSystemWindows="true"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlways">
 
         <ImageView
           android:id="@+id/title_image"
@@ -37,45 +39,34 @@
         <androidx.appcompat.widget.Toolbar
           android:id="@+id/toolbar"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
+          android:layout_height="?attr/actionBarSize"
           app:layout_collapseMode="pin">
 
-          <Button
+          <ImageButton
             android:id="@+id/exit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_arrow_back_black_18dp"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:gravity="start"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:onClick="rip"/>
 
         </androidx.appcompat.widget.Toolbar>
 
       </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-      <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <WebView
-          android:id="@+id/webview"
-          app:layout_anchor="@id/title_image"
-          android:layout_gravity="bottom"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        </WebView>
-
-      </FrameLayout>
-
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-      android:layout_height="wrap_content"
-      android:layout_width="wrap_content"
-      android:layout_margin="@dimen/activity_horizontal_margin"
-      android:src="@drawable/ic_launcher_foreground"
-      app:layout_anchor="@id/appbar"
-      app:layout_anchorGravity="bottom|right|end"
-      />
+    <com.developers.team100k.rufus.view.NestedWebView
+      android:id="@+id/webview"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      app:layout_constraintHeight_default="spread"
+      android:padding="8dp"
+      android:elevation="2dp"
+      app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    </com.developers.team100k.rufus.view.NestedWebView>
 
   </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

@@ -36,17 +36,18 @@
 
           <ImageView
             android:id="@+id/logoToolbar"
-            android:layout_width="200dp"
+            android:layout_width="120dp"
             android:layout_height="48dp"
             android:layout_centerHorizontal="true"
             android:layout_toStartOf="@id/credits"
-            android:paddingEnd="48dp"
+            android:layout_marginEnd="42dp"
+            android:paddingEnd="40dp"
             android:paddingStart="0dp"
-            android:src="@drawable/com_facebook_button_login_logo"/>
+            android:src="@drawable/toolbar_logo"/>
 
           <Button
             android:id="@+id/credits"
-            android:text="9 Credits"
+            android:text="Credits"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"

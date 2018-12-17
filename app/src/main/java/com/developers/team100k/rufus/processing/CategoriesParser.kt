@@ -7,6 +7,7 @@ import io.reactivex.subjects.PublishSubject
 
 /**
  * Created by Richard Hrmo.
+ * Category parser of data from Firebase
  */
 class CategoriesParser(val mDatabase: DatabaseReference) {
 

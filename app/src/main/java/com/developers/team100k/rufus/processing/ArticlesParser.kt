@@ -1,6 +1,7 @@
 package com.developers.team100k.rufus.processing
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import com.developers.team100k.rufus.entity.Article
 import com.developers.team100k.rufus.entity.Headline
 import com.developers.team100k.rufus.entity.Page
@@ -13,6 +14,7 @@ import io.reactivex.subjects.PublishSubject
 
 /**
  * Created by Richard Hrmo.
+ * Parser for data coming from Firebase database
  */
 
 class ArticlesParser(val mDatabase: DatabaseReference){
@@ -27,12 +29,12 @@ class ArticlesParser(val mDatabase: DatabaseReference){
     var doneContent = false
     var doneTeam = false
 
-    lateinit var list: List<Any>
+
     lateinit var listOfArticles: MutableList<Headline>
     var data = PublishSubject.create<Any>()
     val jsonParser = JsonParser()
 
-    fun call(){
+    fun call() {
         callDatabase()
         secondCall()
         categoryCall()
@@ -40,7 +42,7 @@ class ArticlesParser(val mDatabase: DatabaseReference){
     }
 
     fun callDatabase(){
-        mDatabase.child("posts").addListenerForSingleValueEvent(object : ValueEventListener {
+        mDatabase.child("posts").orderByChild("status").equalTo("published").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 mapPosts = dataSnapshot.getValue(false) as Map<String, Map<String, String>>
                 donePost = true
@@ -96,6 +98,9 @@ class ArticlesParser(val mDatabase: DatabaseReference){
 
             override fun onCancelled(databaseError: DatabaseError) {
                 println("Fail to read.")
+                mapTeam = mutableMapOf()
+                doneTeam = true
+                allDone()
             }
         })
     }
@@ -117,9 +122,11 @@ class ArticlesParser(val mDatabase: DatabaseReference){
             if (v != null){
                 textCategory = v.get("name")
             }
-            val f = mapTeam[current.get("author")]
-            if (f != null){
-                textAuthor = f.get("name")
+            if (mapTeam.isNotEmpty()){
+                val f = mapTeam[current.get("author")]
+                if (f != null){
+                    textAuthor = f.get("name")
+                }
             }
             val headline = Headline(mapPosts.keys.elementAt(i),
                     textAuthor,
@@ -127,6 +134,8 @@ class ArticlesParser(val mDatabase: DatabaseReference){
                     current.get("subtitle"),
                     textCategory,
                     current.get("featured") as Boolean,
+                    current.get("paid") as Boolean,
+                    current.get("image"),
                     jsonParser.articles)
             listOfArticles.add(headline)
         }

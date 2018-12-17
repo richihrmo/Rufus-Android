@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context=".PaymentActivity">
+
+  <androidx.appcompat.widget.Toolbar
+    android:id="@+id/toolbar2"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="@color/colorNext"
+    android:theme="@style/AppStyle"
+    android:elevation="4dp">
+
+    <ImageButton
+      android:id="@+id/back"
+      android:src="@drawable/baseline_arrow_back_black_18dp"
+      android:layout_width="32dp"
+      android:layout_height="32dp"/>
+
+  </androidx.appcompat.widget.Toolbar>
+
+  <androidx.cardview.widget.CardView
+    android:id="@+id/card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="24dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    app:cardCornerRadius="4dp"
+    app:layout_constraintBottom_toTopOf="@+id/card2"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    >
+
+    <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+      <ImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:scaleType="centerCrop"
+        android:src="@color/colorNext"/>
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:padding="16dp"
+        android:text="Small package"
+        android:textColor="@color/White"
+        android:textSize="18sp"/>
+      <LinearLayout
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/image"
+        android:padding="16dp"
+        android:orientation="vertical">
+        <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="Small package will give you access to 20 paid articles. With each purchase, you are supporting indepent news platform"
+          android:textColor="#555"/>
+      </LinearLayout>
+      <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/description">
+        <Button
+          android:id="@+id/cheap"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="0dp"
+          android:layout_marginRight="24dp"
+          android:layout_alignParentEnd="true"
+          android:text="0.99€"
+          android:theme="@style/Widget.AppCompat.Button.Borderless.Colored"/>
+      </RelativeLayout>
+    </RelativeLayout>
+
+  </androidx.cardview.widget.CardView>
+
+  <androidx.cardview.widget.CardView
+    android:id="@+id/card2"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="48dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    app:cardCornerRadius="4dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    >
+
+    <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+      <ImageView
+        android:id="@+id/image2"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:scaleType="centerCrop"
+        android:src="@color/colorNext"/>
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:padding="16dp"
+        android:text="Big package"
+        android:textColor="@color/White"
+        android:textSize="18sp"/>
+      <LinearLayout
+        android:id="@+id/description2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/image2"
+        android:padding="16dp"
+        android:orientation="vertical">
+        <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="Big package will give you access to 150 paid articles. With each purchase, you are supporting indepent news platform"
+          android:textColor="#555"/>
+      </LinearLayout>
+      <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/description2">
+        <Button
+          android:id="@+id/expensive"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="0dp"
+          android:layout_marginRight="24dp"
+          android:layout_alignParentEnd="true"
+          android:text="4.99€"
+          android:theme="@style/Widget.AppCompat.Button.Borderless.Colored"/>
+      </RelativeLayout>
+    </RelativeLayout>
+
+  </androidx.cardview.widget.CardView>
+
+
+  <TextView
+    android:id="@+id/balance_text"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:text="Your current balance"
+    android:textSize="14sp"
+    android:textStyle="italic"
+    android:fontFamily="sans-serif-medium"
+    app:layout_constraintBottom_toTopOf="@+id/balance_number"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"/>
+
+  <TextView
+    android:id="@+id/balance_number"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="64dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:text="69 credits"
+    android:textSize="24sp"
+    android:textStyle="bold"
+    android:fontFamily="sans-serif-medium"
+    app:layout_constraintBottom_toTopOf="@+id/card"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

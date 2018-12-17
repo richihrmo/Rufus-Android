@@ -10,9 +10,11 @@ public class Headline {
   private String subtitle;
   private String category;
   private Boolean featured;
+  private Boolean paid;
+  private String image;
   private Article article;
 
-  public Headline(String id, String author, String title, String subtitle, String category, Boolean featured,
+  public Headline(String id, String author, String title, String subtitle, String category, Boolean featured, Boolean paid, String image,
       Article article) {
     this.id = id;
     this.author = author;
@@ -20,6 +22,8 @@ public class Headline {
     this.subtitle = subtitle;
     this.category = category;
     this.featured = featured;
+    this.paid = paid;
+    this.image = image;
     this.article = article;
   }
 
@@ -45,6 +49,14 @@ public class Headline {
 
   public Boolean getFeatured() {
     return featured;
+  }
+
+  public Boolean getPaid() {
+    return paid;
+  }
+
+  public String getImage() {
+    return image;
   }
 
   public Article getArticle() {
