@@ -1,4 +1,4 @@
-package com.developers.team100k.rufus.adapter;
+package com.developers.team100k.rufus.view;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -9,16 +9,14 @@ import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.widget.FrameLayout;
 
-/**
- * Created by Richard Hrmo.
- */
+// solution for WebView component to show video in fullscreen mode.
+
+
 public class MyChromeView extends WebChromeClient{
 
   private View mCustomView;
   private Window mWindow;
   private WebChromeClient.CustomViewCallback mCustomViewCallback;
-  protected FrameLayout mFullscreenContainer;
-  private int mOriginalOrientation;
   private int mOriginalSystemUiVisibility;
 
   public MyChromeView(Window window) {

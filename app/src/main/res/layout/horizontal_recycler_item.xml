@@ -6,47 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp">
-    <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical">
-      <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="160dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_launcher_foreground" />
-      <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
-        <TextView
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="8dp"
-          android:text="@string/app_name"
-          android:textColor="#000"
-          android:textSize="18sp" />
-        <TextView
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/app_name"
-          android:textColor="#555" />
-      </LinearLayout>
-      <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <Button
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/app_name"
-          android:theme="@style/Widget.AppCompat.Button.Borderless.Colored" />
-        <Button
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/app_name"
-          android:theme="@style/Widget.AppCompat.Button.Borderless.Colored" />
-      </LinearLayout>
-    </LinearLayout>
+
   </androidx.cardview.widget.CardView>
 </RelativeLayout>

@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.developers.team100k.rufus.adapter;
+// solution for applying WebView component to CoordinatorLayout with scrolling
+
+package com.developers.team100k.rufus.view;
 
 import android.content.Context;
 import android.util.AttributeSet;

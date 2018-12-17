@@ -1,6 +1,5 @@
 package com.developers.team100k.rufus;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.widget.ImageView;
 import androidx.annotation.NonNull;

@@ -5,6 +5,8 @@ import android.animation.Animator.AnimatorListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -77,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
   NavigationView mNavigationView;
   @BindView(R.id.toolbar)
   Toolbar myToolbar;
+  @BindView(R.id.credits)
+  Button mButton;
   @BindView(R.id.viewpager)
   ViewPager mViewPager;
 
@@ -113,6 +117,14 @@ public class MainActivity extends AppCompatActivity {
       actionBar.setDisplayHomeAsUpEnabled(true);
       actionBar.setHomeAsUpIndicator(R.drawable.com_facebook_button_icon);
     }
+
+    mButton.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        Intent intent = new Intent(getApplicationContext(), PaymentActivity.class);
+        startActivity(intent);
+      }
+    });
 
     mFirebaseUser = mAuth.getCurrentUser();
     System.out.println(mFirebaseUser.getDisplayName());
@@ -181,32 +193,6 @@ public class MainActivity extends AppCompatActivity {
     categoriesParser.getData().subscribe(categoryObserver);
 
     tabLayout.setupWithViewPager(mViewPager);
-//    tabLayout.addOnTabSelectedListener(new OnTabSelectedListener() {
-//      @Override
-//      public void onTabSelected(Tab tab) {
-//        if (mEventBus != null){
-//          Log.e("tab", tab.getText().toString());
-//          mEventBus.postSticky(tab.getText().toString());
-////          List<Headline> list = new ArrayList<>();
-////          if (String.valueOf(tab.getText()).equals("All")){
-////            list = listHeadline;
-////          } else if (listHeadline != null){
-////            for (Headline headline : listHeadline ){
-////              if (headline.getCategory() != null && headline.getCategory().equals(String.valueOf(tab.getText()))){
-////                list.add(headline);
-////              }
-////            }
-////          }
-////          mEventBus.postSticky(list);
-//        }
-//      }
-//
-//      @Override
-//      public void onTabUnselected(Tab tab) {}
-//
-//      @Override
-//      public void onTabReselected(Tab tab) {}
-//    });
 
     mNavigationView.setNavigationItemSelectedListener(new OnNavigationItemSelectedListener() {
       @Override
@@ -229,115 +215,6 @@ public class MainActivity extends AppCompatActivity {
         return true;
       }
     });
-
-//    mHorizontalRV.setHasFixedSize(true);
-
-//    mVerticalRV.addOnScrollListener(new OnScrollObserver() {
-//      @Override
-//      public void show() {
-//        myToolbar.animate()
-//            .translationY(0)
-//            .setInterpolator(new DecelerateInterpolator(1))
-//            .setStartDelay(0)
-//            .start();
-//        mHorizontalRV.animate()
-//            .translationY(0)
-//            .setInterpolator(new DecelerateInterpolator(1))
-//            .setStartDelay(0)
-//            .start();
-//        welcome.animate().translationY(0)
-//            .setInterpolator(new DecelerateInterpolator(1))
-//            .setListener(new AnimatorListener() {
-//              @Override
-//              public void onAnimationStart(Animator animator) {
-//                mHorizontalRV.setVisibility(View.VISIBLE);
-//                myToolbar.setVisibility(View.VISIBLE);
-//                welcome.setVisibility(View.VISIBLE);
-//              }
-//              @Override
-//              public void onAnimationEnd(Animator animator) {
-//              }
-//              @Override
-//              public void onAnimationCancel(Animator animator) {
-//                mHorizontalRV.setVisibility(View.VISIBLE);
-//                myToolbar.setVisibility(View.VISIBLE);
-//                welcome.setVisibility(View.VISIBLE);
-//              }
-//              @Override
-//              public void onAnimationRepeat(Animator animator) {
-//                mHorizontalRV.setVisibility(View.VISIBLE);
-//                myToolbar.setVisibility(View.VISIBLE);
-//                welcome.setVisibility(View.VISIBLE);
-//              }
-//            })
-//            .setStartDelay(0)
-//            .start();
-//      }
-//      @Override
-//      public void hide() {
-//        myToolbar.animate()
-//            .translationY(-myToolbar.getHeight())
-//            .setInterpolator(new AccelerateInterpolator(1))
-//            .setStartDelay(450)
-//            .start();
-//        mHorizontalRV.animate()
-//            .translationY(-(myToolbar.getHeight() + mHorizontalRV.getHeight() + welcome.getHeight() + MARGIN_TOP))
-//            .setInterpolator(new AccelerateInterpolator(1))
-//            .setStartDelay(150)
-//            .start();
-//        welcome.animate().translationY(-(myToolbar.getHeight() + welcome.getHeight() + MARGIN_TOP))
-//            .setInterpolator(new AccelerateInterpolator(1))
-//            .setListener(new AnimatorListener() {
-//              @Override
-//              public void onAnimationStart(Animator animator) {
-//                mHorizontalRV.setVisibility(View.GONE);
-//                myToolbar.setVisibility(View.GONE);
-//                welcome.setVisibility(View.GONE);
-//                mVerticalRV.setNestedScrollingEnabled(false);
-//              }
-//              @Override
-//              public void onAnimationEnd(Animator animator) {
-//                mVerticalRV.setVerticalScrollbarPosition(2);
-//
-////                mVerticalRV.smoothScrollToPosition(2);
-//              }
-//              @Override
-//              public void onAnimationCancel(Animator animator) {
-//                mHorizontalRV.setVisibility(View.GONE);
-//                myToolbar.setVisibility(View.GONE);
-//                welcome.setVisibility(View.GONE);
-//              }
-//              @Override
-//              public void onAnimationRepeat(Animator animator) {
-//                mHorizontalRV.setVisibility(View.GONE);
-//                myToolbar.setVisibility(View.GONE);
-//                welcome.setVisibility(View.GONE);
-//              }
-//            })
-//            .setStartDelay(450)
-//            .start();
-//      }
-//    });
-
-//    mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
-//      @Override
-//      public void onRefresh() {
-//        Toast.makeText(MainActivity.this, "Hello", Toast.LENGTH_LONG).show();
-//        mRefreshLayout.setRefreshing(false);
-//      }
-//    });
-
-//    SnapHelper snapHelper = new PagerSnapHelper();
-//    snapHelper.attachToRecyclerView(mHorizontalRV);
-//    LayoutManager mHorizontalLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-//    mHorizontalRV.setLayoutManager(mHorizontalLayoutManager);
-//    mAdapterHor = new RecyclerAdapter(dummy_data);
-//    mHorizontalRV.setAdapter(mAdapterHor);
-
-//    LayoutManager mLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
-//    mVerticalRV.setLayoutManager(mLayoutManager);
-//    mAdapter = new RecyclerAdapter(dummy_data);
-//    mVerticalRV.setAdapter(mAdapter);
   }
 
   @Override
@@ -391,14 +268,9 @@ public class MainActivity extends AppCompatActivity {
   }
 
   public void itemClick(View view){
-    Log.e("click", view.getId() + "");
-    Log.e("click", mViewPager.getAdapter().getPageTitle(mViewPager.getCurrentItem()).toString());
-    Log.e("click", "" + ((TextView)((ConstraintLayout) view).getChildAt(6)).getText());
-    Intent intent = new Intent(this, ShowActivity.class);
-    intent.putExtra("article_id", ((TextView)((ConstraintLayout) view).getChildAt(6)).getText());
-    intent.putExtra("title", "One morning, when Gregor Samsa woke from troubled dreams");
-    intent.putExtra("subtitle", "He found himself transformed in his bed into a horrible vermin");
-    startActivity(intent);
+
+    Log.e("click", "cool");
+
   }
 
 }

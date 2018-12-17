@@ -2,6 +2,7 @@ package com.developers.team100k.rufus.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -11,16 +12,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.developers.team100k.rufus.R
 import com.developers.team100k.rufus.entity.Headline
-
+import io.reactivex.subjects.PublishSubject
+import kotlinx.android.synthetic.main.recycler_item.view.*
 
 
 /**
  * Created by Richard Hrmo.
  */
-class RecyclerAdapter(private var dataSet: List<Headline>):
+class RecyclerAdapter(var dataSet: List<Headline>):
         RecyclerView.Adapter<RecyclerAdapter.ViewHolder>(){
 
     var context: Context? = null
+    val onClickItem = PublishSubject.create<Any>()
+    val onClickSave = PublishSubject.create<Any>()
 
     override fun onCreateViewHolder(parent: ViewGroup,
                                     viewType: Int): ViewHolder {
@@ -44,6 +48,12 @@ class RecyclerAdapter(private var dataSet: List<Headline>):
                 .into(holder.titleImage)
         holder.category.text = dataSet[position].category
         holder.id.text = dataSet[position].id
+        holder.save.setOnClickListener {
+            onClickSave.onNext(dataSet[position])
+        }
+        holder.itemView.setOnClickListener {
+            onClickItem.onNext(dataSet[position])
+        }
     }
 
     inner class ViewHolder(private val ll: LinearLayout) : RecyclerView.ViewHolder(ll){

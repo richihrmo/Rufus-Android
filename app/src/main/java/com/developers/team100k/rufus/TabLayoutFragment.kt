@@ -1,8 +1,8 @@
-package com.developers.team100k.rufus.adapter
+package com.developers.team100k.rufus
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.provider.SyncStateContract.Helpers.update
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,11 +13,10 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.developers.team100k.rufus.ActivityViewModel
-import com.developers.team100k.rufus.R
+import com.developers.team100k.rufus.viewmodel.ActivityViewModel
+import com.developers.team100k.rufus.adapter.RecyclerAdapter
 import com.developers.team100k.rufus.entity.Headline
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
+import io.reactivex.observers.DefaultObserver
 import java.lang.Exception
 
 /**
@@ -30,6 +29,7 @@ class TabLayoutFragment : Fragment() {
     lateinit var activityViewModel: ActivityViewModel
     lateinit var data: List<Headline>
     lateinit var adapter: RecyclerAdapter
+    lateinit var itemClickObserver: DefaultObserver<Any>
 //    val eventBus = EventBus.getDefault()
 
     override fun onStart() {
@@ -72,7 +72,8 @@ class TabLayoutFragment : Fragment() {
         recyclerView = rootView.findViewById(R.id.vertical_recyclerview)
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = RecyclerAdapter(listOf())
+        adapter = RecyclerAdapter(listOf())
+        recyclerView.adapter = adapter
         val refresh = rootView.findViewById<SwipeRefreshLayout>(R.id.swipe)
         refresh.setOnRefreshListener {
             activityViewModel.updateHeadlines()
@@ -82,6 +83,26 @@ class TabLayoutFragment : Fragment() {
             }
             Handler().postDelayed(runnable, 1500)
         }
+        itemClickObserver = object : DefaultObserver<Any>() {
+            override fun onNext(o: Any) {
+                val clicked = o as Headline
+                val intent = Intent(context, ShowActivity::class.java)
+                intent.putExtra("article_id", clicked.id)
+                intent.putExtra("title", clicked.title)
+                intent.putExtra("subtitle", clicked.subtitle)
+                startActivity(intent)
+                Log.e("ClickObserver", "ha")
+            }
+
+            override fun onError(e: Throwable) {
+                Log.e("Observer", "onError")
+            }
+
+            override fun onComplete() {
+                Log.e("Observer", "onComplete")
+            }
+        }
+        adapter.onClickItem.subscribe(itemClickObserver)
 
         return rootView
     }
@@ -100,7 +121,7 @@ class TabLayoutFragment : Fragment() {
 //    fun onEvent(category: String){}
 
     private fun update(){
-        adapter = RecyclerAdapter(data)
+        adapter.dataSet = data
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
     }

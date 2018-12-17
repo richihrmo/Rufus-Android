@@ -49,9 +49,12 @@
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
     </activity>
-    <activity android:name=".ShowActivity"
-      android:parentActivityName=".MainActivity"
-      android:configChanges="orientation|screenSize|screenLayout">
+    <activity
+      android:configChanges="orientation|screenSize|screenLayout"
+      android:name=".ShowActivity"
+      android:parentActivityName=".MainActivity">
+    </activity>
+    <activity android:name=".PaymentActivity">
     </activity>
   </application>
 
