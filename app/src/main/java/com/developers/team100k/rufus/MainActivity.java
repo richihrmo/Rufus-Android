@@ -198,6 +198,10 @@ public class MainActivity extends AppCompatActivity {
       @Override
       public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
+          case R.id.nav_manage:
+            Intent pageActivity = new Intent(MainActivity.this, PageActivity.class);
+            startActivity(pageActivity);
+            break;
           case R.id.logout:
             loginActivity = new Intent(MainActivity.this, LoginActivity.class);
             if (facebook) LoginManager.getInstance().logOut();

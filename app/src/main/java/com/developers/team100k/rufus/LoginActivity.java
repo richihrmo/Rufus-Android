@@ -2,6 +2,7 @@ package com.developers.team100k.rufus;
 
 import android.content.Intent;
 import android.widget.ImageView;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -38,10 +39,14 @@ import java.util.Arrays;
 
 public class LoginActivity extends AppCompatActivity {
 
-  @BindView(R.id.facebook_login) LoginButton mFacebookButton;
-  @BindView(R.id.google_login) SignInButton mGoogleButton;
+  @BindView(R.id.facebook_login)
+  LoginButton mFacebookButton;
+  @BindView(R.id.google_login)
+  SignInButton mGoogleButton;
   @BindView(R.id.logo_login)
   ImageView mImageView;
+  @BindView(R.id.terms)
+  TextView mTextView;
   private GoogleSignInClient googleSignInClient;
   private FirebaseAuth mAuth;
   //  private ProgressDialog progressDialog;
@@ -56,11 +61,17 @@ public class LoginActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_login);
     ButterKnife.bind(this);
-    mImageView.setImageResource(R.drawable.login_screen_logo);
     mAuth = FirebaseAuth.getInstance();
     mainActivity = new Intent(LoginActivity.this, MainActivity.class);
     FirebaseUser currentUser = mAuth.getCurrentUser();
     System.out.println(currentUser);
+    mTextView.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        Intent intent = new Intent(LoginActivity.this, PageActivity.class);
+        startActivity(intent);
+      }
+    });
       FacebookSdk.sdkInitialize(getApplicationContext());
       callbackManager = CallbackManager.Factory.create();
       mFacebookButton.setReadPermissions(Arrays.asList(EMAIL));
@@ -184,4 +195,6 @@ public class LoginActivity extends AppCompatActivity {
       //update UI null
     }
   }
+
+
 }
