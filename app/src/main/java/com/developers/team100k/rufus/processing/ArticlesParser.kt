@@ -14,6 +14,7 @@ import io.reactivex.subjects.PublishSubject
 
 /**
  * Created by Richard Hrmo.
+ * Parser for data coming from Firebase database
  */
 
 class ArticlesParser(val mDatabase: DatabaseReference){

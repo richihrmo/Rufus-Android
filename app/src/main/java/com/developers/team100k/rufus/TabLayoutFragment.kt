@@ -21,6 +21,7 @@ import java.lang.Exception
 
 /**
  * Created by Richard Hrmo.
+ * Fragment of operations in TabLayout, showing RecyclerView with data filtered by category
  */
 class TabLayoutFragment : Fragment() {
 
@@ -30,18 +31,15 @@ class TabLayoutFragment : Fragment() {
     lateinit var data: List<Headline>
     lateinit var adapter: RecyclerAdapter
     lateinit var itemClickObserver: DefaultObserver<Any>
-    lateinit var itemSaveObserver: DefaultObserver<Any>
-//    val eventBus = EventBus.getDefault()
+    lateinit var itemBuyObserver: DefaultObserver<Any>
 
     override fun onStart() {
         super.onStart()
-//        eventBus.register(this)
         Log.e("Fragment", "start")
     }
 
     override fun onStop() {
         super.onStop()
-//        eventBus.unregister(this)
         fragmentManager?.saveFragmentInstanceState(this)
         Log.e("Fragment", "stop")
     }
@@ -93,7 +91,7 @@ class TabLayoutFragment : Fragment() {
                 intent.putExtra("subtitle", clicked.subtitle)
                 intent.putExtra("image", clicked.image)
                 startActivity(intent)
-                Log.e("ClickObserver", "ha")
+                Log.e("ClickObserver", "Success")
             }
 
             override fun onError(e: Throwable) {
@@ -106,16 +104,9 @@ class TabLayoutFragment : Fragment() {
         }
         adapter.onClickItem.subscribe(itemClickObserver)
 
-        itemSaveObserver = object : DefaultObserver<Any>() {
+        itemBuyObserver = object : DefaultObserver<Any>() {
             override fun onNext(o: Any) {
-//                val clicked = o as Headline
-//                val intent = Intent(context, ShowActivity::class.java)
-//                intent.putExtra("article_id", clicked.id)
-//                intent.putExtra("title", clicked.title)
-//                intent.putExtra("subtitle", clicked.subtitle)
-//                intent.putExtra("image", clicked.image)
-//                startActivity(intent)
-                Log.e("ClickObserver", "ha")
+                Log.e("ClickObserver", "Success")
             }
 
             override fun onError(e: Throwable) {
@@ -126,7 +117,7 @@ class TabLayoutFragment : Fragment() {
                 Log.e("Observer", "onComplete")
             }
         }
-        adapter.onClickSave.subscribe(itemSaveObserver)
+        adapter.onClickSave.subscribe(itemBuyObserver)
 
         return rootView
     }
@@ -140,9 +131,6 @@ class TabLayoutFragment : Fragment() {
         super.onDestroyView()
         Log.e("Fragment", "destroyview")
     }
-
-//    @Subscribe(sticky = true)
-//    fun onEvent(category: String){}
 
     private fun update(){
         adapter.dataSet = data

@@ -1,54 +1,32 @@
 package com.developers.team100k.rufus;
 
-import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager.widget.ViewPager.SimpleOnPageChangeListener;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.developers.team100k.rufus.adapter.TabLayoutPagerAdapter;
 import com.developers.team100k.rufus.entity.Dialog;
 import com.developers.team100k.rufus.entity.Headline;
-import com.developers.team100k.rufus.processing.ArticlesParser;
 import com.developers.team100k.rufus.processing.CategoriesParser;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener;
 import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
-import com.google.android.material.tabs.TabLayout.Tab;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.PagerSnapHelper;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.RecyclerView.LayoutManager;
-import androidx.recyclerview.widget.SnapHelper;
 import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
-import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.bumptech.glide.Glide;
-import com.developers.team100k.rufus.adapter.OnScrollObserver;
-import com.developers.team100k.rufus.adapter.RecyclerAdapter;
-import com.developers.team100k.rufus.processing.JsonParser;
 import com.developers.team100k.rufus.profile.UserProfile;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
@@ -56,18 +34,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.reactivex.observers.DefaultObserver;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+/**
+ * Activity handling all actions on Main menu screen
+ */
 
 public class MainActivity extends AppCompatActivity {
 
@@ -267,12 +244,6 @@ public class MainActivity extends AppCompatActivity {
   protected void onRestart() {
     super.onRestart();
     Log.e("MainActivity", "restart");
-  }
-
-  public void itemClick(View view){
-
-    Log.e("click", "cool");
-
   }
 
 }

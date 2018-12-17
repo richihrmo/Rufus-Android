@@ -37,6 +37,10 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import java.util.Arrays;
 
 
+/**
+ * Activity handling all login operations
+ */
+
 public class LoginActivity extends AppCompatActivity {
 
   @BindView(R.id.facebook_login)
@@ -49,7 +53,6 @@ public class LoginActivity extends AppCompatActivity {
   TextView mTextView;
   private GoogleSignInClient googleSignInClient;
   private FirebaseAuth mAuth;
-  //  private ProgressDialog progressDialog;
   private CallbackManager callbackManager;
 
   private static final String EMAIL = "email";
@@ -100,7 +103,6 @@ public class LoginActivity extends AppCompatActivity {
       mGoogleButton.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View view) {
-//        progressDialog = ProgressDialog.show(LoginActivity.this, "", "Loading", true);
           signIn();
         }
       });
@@ -133,14 +135,6 @@ public class LoginActivity extends AppCompatActivity {
     }
   }
 
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-//    if (progressDialog != null) {
-//      progressDialog.dismiss();
-//    }
-  }
-
   private void signIn(){
     Intent signInIntent = googleSignInClient.getSignInIntent();
     startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -168,15 +162,11 @@ public class LoginActivity extends AppCompatActivity {
               // Sign in success, update UI with the signed-in user's information
               Log.d("Firebase", "signInWithCredential:success");
               FirebaseUser user = mAuth.getCurrentUser();
-//              updateUI(user);
             } else {
               // If sign in fails, display a message to the user.
               Log.w("Firebase", "signInWithCredential:failure", task.getException());
               System.out.println("Authentication Failed.");
-//              updateUI(null);
             }
-
-            // ...
           }
         });
   }
@@ -189,10 +179,8 @@ public class LoginActivity extends AppCompatActivity {
       firebaseAuthWithGoogle(account);
       startActivity(mainActivity);
       finish();
-      //update UI
     } catch (ApiException e){
       Log.w("Sign-in", "failed code: " + e.getStatusCode());
-      //update UI null
     }
   }
 

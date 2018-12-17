@@ -14,6 +14,7 @@ import org.greenrobot.eventbus.EventBus
 
 /**
  * Created by Richard Hrmo.
+ * ViewModel tied to ShowActivity, used for processing of HTML data from Firebase
  */
 class ShowViewModel : ViewModel() {
 

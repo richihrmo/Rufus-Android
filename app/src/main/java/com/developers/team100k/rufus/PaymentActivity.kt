@@ -9,6 +9,13 @@ import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.PurchasesUpdatedListener
 import kotlinx.android.synthetic.main.activity_payment.*
 
+
+/**
+ * Created by Richard Hrmo
+ * Activity handling payments and Billing Library
+ * Need to register Developer Account
+ */
+
 class PaymentActivity : AppCompatActivity() {
 
     lateinit private var billingClient: BillingClient
@@ -39,9 +46,9 @@ class PaymentActivity : AppCompatActivity() {
 //            }
 //        })
 
-        back.setOnClickListener(View.OnClickListener {
+        back.setOnClickListener {
             finish()
-        })
+        }
 
 
     }
