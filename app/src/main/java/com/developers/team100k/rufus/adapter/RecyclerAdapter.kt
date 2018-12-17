@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.developers.team100k.rufus.R
+import com.developers.team100k.rufus.R.drawable.ic_launcher_foreground
 import com.developers.team100k.rufus.entity.Headline
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.recycler_item.view.*
@@ -28,7 +29,6 @@ class RecyclerAdapter(var dataSet: List<Headline>):
 
     override fun onCreateViewHolder(parent: ViewGroup,
                                     viewType: Int): ViewHolder {
-
         context = parent.context
         // create a new view
         val cardView = LayoutInflater.from(parent.context)
@@ -43,11 +43,20 @@ class RecyclerAdapter(var dataSet: List<Headline>):
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.title.text = dataSet[position].title
         holder.subtitle.text = dataSet[position].subtitle
-        Glide.with(context!!)
-                .load("https://thenypost.files.wordpress.com/2018/11/trump-judges.jpg?quality=90&strip=all&w=618&h=410&crop=1")
-                .into(holder.titleImage)
+        if (dataSet[position].image != null){
+            Glide.with(context!!)
+                    .load(dataSet[position].image)
+                    .into(holder.titleImage)
+        } else {
+            Glide.with(context!!)
+                    .load(ic_launcher_foreground)
+                    .into(holder.titleImage)
+        }
         holder.category.text = dataSet[position].category
         holder.id.text = dataSet[position].id
+        if (dataSet[position].paid == true){
+            holder.save.visibility = View.VISIBLE
+        }
         holder.save.setOnClickListener {
             onClickSave.onNext(dataSet[position])
         }

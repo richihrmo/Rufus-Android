@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
     ActionBar actionBar = getSupportActionBar();
     if (actionBar != null) {
       actionBar.setDisplayHomeAsUpEnabled(true);
-      actionBar.setHomeAsUpIndicator(R.drawable.com_facebook_button_icon);
+      actionBar.setHomeAsUpIndicator(R.drawable.baseline_menu_black_18dp);
     }
 
     mButton.setOnClickListener(new OnClickListener() {
@@ -210,8 +210,6 @@ public class MainActivity extends AppCompatActivity {
         }
         item.setChecked(true);
         mDrawerLayout.closeDrawers();
-        //update UI according to item selected
-        // TODO
         return true;
       }
     });

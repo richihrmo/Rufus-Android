@@ -56,9 +56,7 @@ public class LoginActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_login);
     ButterKnife.bind(this);
-    Glide.with(this)
-        .load("https://gdb.alhurra.eu/85D4F24D-76C5-452F-80E0-9DA60A71A174_cx0_cy22_cw0_w1023_r1_s.png")
-        .into(mImageView);
+    mImageView.setImageResource(R.drawable.login_screen_logo);
     mAuth = FirebaseAuth.getInstance();
     mainActivity = new Intent(LoginActivity.this, MainActivity.class);
     FirebaseUser currentUser = mAuth.getCurrentUser();

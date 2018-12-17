@@ -30,6 +30,7 @@ class TabLayoutFragment : Fragment() {
     lateinit var data: List<Headline>
     lateinit var adapter: RecyclerAdapter
     lateinit var itemClickObserver: DefaultObserver<Any>
+    lateinit var itemSaveObserver: DefaultObserver<Any>
 //    val eventBus = EventBus.getDefault()
 
     override fun onStart() {
@@ -90,6 +91,7 @@ class TabLayoutFragment : Fragment() {
                 intent.putExtra("article_id", clicked.id)
                 intent.putExtra("title", clicked.title)
                 intent.putExtra("subtitle", clicked.subtitle)
+                intent.putExtra("image", clicked.image)
                 startActivity(intent)
                 Log.e("ClickObserver", "ha")
             }
@@ -103,6 +105,28 @@ class TabLayoutFragment : Fragment() {
             }
         }
         adapter.onClickItem.subscribe(itemClickObserver)
+
+        itemSaveObserver = object : DefaultObserver<Any>() {
+            override fun onNext(o: Any) {
+//                val clicked = o as Headline
+//                val intent = Intent(context, ShowActivity::class.java)
+//                intent.putExtra("article_id", clicked.id)
+//                intent.putExtra("title", clicked.title)
+//                intent.putExtra("subtitle", clicked.subtitle)
+//                intent.putExtra("image", clicked.image)
+//                startActivity(intent)
+                Log.e("ClickObserver", "ha")
+            }
+
+            override fun onError(e: Throwable) {
+                Log.e("Observer", "onError")
+            }
+
+            override fun onComplete() {
+                Log.e("Observer", "onComplete")
+            }
+        }
+        adapter.onClickSave.subscribe(itemSaveObserver)
 
         return rootView
     }

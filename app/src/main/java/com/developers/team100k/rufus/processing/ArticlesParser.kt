@@ -41,7 +41,7 @@ class ArticlesParser(val mDatabase: DatabaseReference){
     }
 
     fun callDatabase(){
-        mDatabase.child("posts").addListenerForSingleValueEvent(object : ValueEventListener {
+        mDatabase.child("posts").orderByChild("status").equalTo("published").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 mapPosts = dataSnapshot.getValue(false) as Map<String, Map<String, String>>
                 donePost = true
@@ -133,6 +133,8 @@ class ArticlesParser(val mDatabase: DatabaseReference){
                     current.get("subtitle"),
                     textCategory,
                     current.get("featured") as Boolean,
+                    current.get("paid") as Boolean,
+                    current.get("image"),
                     jsonParser.articles)
             listOfArticles.add(headline)
         }

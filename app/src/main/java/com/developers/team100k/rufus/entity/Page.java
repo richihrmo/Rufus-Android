@@ -15,14 +15,14 @@ public class Page {
     return subtitle;
   }
 
-  public Article getArticle() {
+  public String getArticle() {
     return article;
   }
 
   private String subtitle;
-  private Article article;
+  private String article;
 
-  public Page(String title, String subtitle, Article article) {
+  public Page(String title, String subtitle, String article) {
     this.title = title;
     this.subtitle = subtitle;
     this.article = article;
